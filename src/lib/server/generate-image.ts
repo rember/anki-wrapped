@@ -1,4 +1,3 @@
-import { Resvg } from '@resvg/resvg-js';
 import { Effect } from 'effect';
 import satori, { type SatoriOptions } from 'satori';
 import type { DataImage } from '../shared/values';
@@ -46,18 +45,18 @@ export class GeneratorImage extends Effect.Service<GeneratorImage>()('GeneratorI
 
 		// ##: renderPng
 
-		const renderPng = (args: { dataImage: DataImage; svg: string }) =>
-			Effect.sync(() => {
-				const renderer = new Resvg(args.svg, { background: 'white' });
-				const bufferPng = renderer.render().asPng();
-				return bufferPng;
-			});
+		// const renderPng = (args: { dataImage: DataImage; svg: string }) =>
+		// 	Effect.sync(() => {
+		// 		const renderer = new Resvg(args.svg, { background: 'white' });
+		// 		const bufferPng = renderer.render().asPng();
+		// 		return bufferPng;
+		// 	});
 
 		// ##:
 
 		return {
-			generateSvg,
-			renderPng
+			generateSvg
+			// renderPng
 		};
 	}),
 	dependencies: [Fonts.Fonts.Default]
