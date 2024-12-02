@@ -30,6 +30,7 @@ export class Router extends Effect.Service<Router>()('Router', {
 				})
 			),
 			HttpRouter.prefixAll('/api'),
+			Effect.tapErrorCause(Effect.logError),
 			Effect.catchTags({
 				RouteNotFound: () => HttpServerResponse.text('API route not found', { status: 404 })
 			})

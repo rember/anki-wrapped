@@ -1,6 +1,6 @@
 import * as Router from '$lib/server/router';
 import * as RuntimeServer from '$lib/server/runtime';
-import { HttpApp } from '@effect/platform';
+import { FetchHttpClient, HttpApp } from '@effect/platform';
 import type { RequestHandler } from '@sveltejs/kit';
 import { Effect, pipe } from 'effect';
 
@@ -12,7 +12,10 @@ const handlerSvelteKit: RequestHandler = async (event) => {
 			const router = yield* Router.Router;
 			const runtime = yield* Effect.promise(() => RuntimeServer.runtime.runtime());
 
-			return HttpApp.toWebHandlerRuntime(runtime)(router);
+			return HttpApp.toWebHandlerRuntime(runtime)(
+				router,
+				Effect.provideService(FetchHttpClient.Fetch, event.fetch)
+			);
 		}),
 		RuntimeServer.runtime.runPromise
 	);
