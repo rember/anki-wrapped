@@ -1,12 +1,13 @@
 import * as Kit from '@sveltejs/kit';
 import { Cause, Effect, Exit, identity, Layer, ManagedRuntime, pipe, Tracer } from 'effect';
-import * as Image from './image';
-import type { Services } from './services';
+import * as GeneratorImage from '../shared/generator-image';
 import * as SvelteKit from './svelte-kit';
 
 // #: Runtime
 
-export const layer = Layer.mergeAll(Image.Image.Default);
+export type Services = GeneratorImage.GeneratorImage;
+
+export const layer = Layer.mergeAll(GeneratorImage.GeneratorImage.Default);
 
 export const runtime: ManagedRuntime.ManagedRuntime<Services, never> = ManagedRuntime.make(
 	pipe(layer, Layer.tapErrorCause(Effect.logError), Layer.orDie)
