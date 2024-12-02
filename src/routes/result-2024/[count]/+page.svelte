@@ -1,5 +1,5 @@
 <script lang="ts">
-	import * as RuntimeUniversal from '$lib/universal/runtime';
+	import { getCtxRuntime } from '$lib/services';
 	import { Exit, Scope } from 'effect';
 	import { onDestroy } from 'svelte';
 	import type { PageData } from './$types';
@@ -9,14 +9,14 @@
 
 	// ##: Bindings
 
-	const scope = Scope.make().pipe(RuntimeUniversal.runtime.runSync);
-	onDestroy(
-		() => void Scope.close(scope, Exit.succeed(undefined)).pipe(RuntimeUniversal.runtime.runFork)
-	);
+	const runtime = getCtxRuntime();
+
+	const scope = Scope.make().pipe(runtime.runSync);
+	onDestroy(() => void Scope.close(scope, Exit.succeed(undefined)).pipe(runtime.runFork));
 
 	const { stateImage$, downloadImage } = Bindings.make(data).pipe(
 		Scope.extend(scope),
-		RuntimeUniversal.runtime.runSync
+		runtime.runSync
 	);
 </script>
 
@@ -37,7 +37,5 @@
 	Loading...
 {/if}
 {#if $stateImage$._tag === 'Success'}
-	<button onclick={() => void downloadImage.pipe(RuntimeUniversal.runtime.runFork)}>
-		Download PNG
-	</button>
+	<button onclick={() => void downloadImage.pipe(runtime.runFork)}> Download PNG </button>
 {/if}

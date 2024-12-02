@@ -1,22 +1,41 @@
+import { browser } from '$app/environment';
+import { initWasm as initWasmResvg, Resvg } from '@resvg/resvg-wasm';
 import { Effect, pipe } from 'effect';
 import satori, { type SatoriOptions } from 'satori';
 import type { DataImage } from './values';
 
 // #:
 
-export class GeneratorImage extends Effect.Service<GeneratorImage>()('GeneratorImage', {
+export const URL_FONT_INTER =
+	'https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-400-normal.ttf';
+
+// #:
+
+export class Image extends Effect.Service<Image>()('Image', {
 	effect: Effect.gen(function* () {
-		// Load fonts
+		// ##: Load fonts
+
 		const fontInter = yield* pipe(
 			Effect.promise(() => fetch(URL_FONT_INTER)),
 			Effect.andThen((response) => response.arrayBuffer())
 		);
 
+		// ##: Init Resvg WASM
+		// TODO: Load Resvg correctly instead of from a CDN.
+
+		if (browser) {
+			yield* Effect.promise(() =>
+				initWasmResvg('https://unpkg.com/@resvg/resvg-wasm/index_bg.wasm')
+			);
+		}
+
+		// ##: generateSvg
+
 		// Creating this object here should improve performance
 		// REFS: https://github.com/vercel/satori/issues/590
 		const optionsSatori: SatoriOptions = {
-			width: 1080,
-			height: 1920,
+			width: 600,
+			height: 400,
 			fonts: [
 				{
 					name: 'Inter',
@@ -26,8 +45,6 @@ export class GeneratorImage extends Effect.Service<GeneratorImage>()('GeneratorI
 				}
 			]
 		};
-
-		// ##: generateSvg
 
 		const generateSvg = (args: { dataImage: DataImage }) =>
 			Effect.gen(function* () {
@@ -46,15 +63,23 @@ export class GeneratorImage extends Effect.Service<GeneratorImage>()('GeneratorI
 				return svg;
 			});
 
+		// ##: renderPng
+
+		const renderPng = (args: { dataImage: DataImage; svg: string }) =>
+			Effect.sync(() => {
+				const renderer = new Resvg(args.svg, {
+					background: 'white',
+					font: { loadSystemFonts: false }
+				});
+				const bufferPng = renderer.render().asPng();
+				return bufferPng;
+			});
+
 		// ##:
 
 		return {
-			generateSvg
+			generateSvg,
+			renderPng
 		};
 	})
 }) {}
-
-// #:
-
-export const URL_FONT_INTER =
-	'https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-400-normal.ttf';

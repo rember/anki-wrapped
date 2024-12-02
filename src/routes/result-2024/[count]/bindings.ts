@@ -1,6 +1,8 @@
-import type { DataImage } from '$lib/shared/values';
-import { isUserAgentMobile } from '$lib/universal/utils';
-import { Effect, identity } from 'effect';
+import { browser } from '$app/environment';
+import * as Image from '$lib/image';
+import { isUserAgentMobile } from '$lib/utils';
+import type { DataImage } from '$lib/values';
+import { Effect, identity, pipe } from 'effect';
 import { get, writable, type Readable } from 'svelte/store';
 
 // #:
@@ -32,6 +34,8 @@ export interface Bindings {
 
 export const make = (args: Args) =>
 	Effect.gen(function* () {
+		const image = yield* Image.Image;
+
 		// ##: State
 
 		const stateImage$ = writable<StateImage>({ _tag: 'Loading' });
@@ -77,6 +81,24 @@ export const make = (args: Args) =>
 				(url) => Effect.sync(() => URL.revokeObjectURL(url))
 			);
 		}).pipe(Effect.tapErrorCause(Effect.logError), Effect.orDie);
+
+		// ##: Side effects
+		// NOTE: We render the image as soon as the page load, we don't wait for
+		// the user to press the "Download"/"Share" button.
+
+		if (browser) {
+			yield* pipe(
+				image.renderPng({ dataImage: args.dataImage, svg: args.svg }),
+				Effect.andThen((bytes) =>
+					Effect.try(() => {
+						const blob = new Blob([bytes], { type: 'image/png' });
+						stateImage$.set({ _tag: 'Success', blob });
+					})
+				),
+				Effect.tapErrorCause(Effect.logError),
+				Effect.forkScoped
+			);
+		}
 
 		// ##:
 
