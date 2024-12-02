@@ -3,7 +3,6 @@
 // - (vite-plugin-wasm-module-workers) https://www.npmjs.com/package/vite-plugin-wasm-module-workers
 
 import { initWasm as initWasmResvg, Resvg } from '@resvg/resvg-wasm';
-import URL_WASM_RESVG from '@resvg/resvg-wasm/index_bg.wasm?url';
 import { Effect } from 'effect';
 import satori, { type SatoriOptions } from 'satori';
 import type { DataImage } from '../shared/values';
@@ -11,15 +10,14 @@ import * as Fonts from './fonts';
 
 // #:
 
-const { default: resvgwasm } = await import(/* @vite-ignore */ `${URL_WASM_RESVG}?module`);
-
-// #:
-
 export class GeneratorImage extends Effect.Service<GeneratorImage>()('GeneratorImage', {
 	effect: Effect.gen(function* () {
 		const fonts = yield* Fonts.Fonts;
 
-		yield* Effect.promise(() => initWasmResvg(resvgwasm));
+		// ##: Init Resvg WASM
+		// TODO: Load Resvg correctly instead of from a CDN.
+
+		yield* Effect.promise(() => initWasmResvg('https://unpkg.com/@resvg/resvg-wasm/index_bg.wasm'));
 
 		// ##: generateSvg
 

@@ -78,9 +78,6 @@ importers:
       vite:
         specifier: ^5.0.3
         version: 5.4.11(@types/node@22.10.1)
-      vite-plugin-wasm-module-workers:
-        specifier: ^0.0.2
-        version: 0.0.2
       vitest:
         specifier: ^2.0.4
         version: 2.1.6(@types/node@22.10.1)
@@ -1841,9 +1838,6 @@ packages:
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
 
-  vite-plugin-wasm-module-workers@0.0.2:
-    resolution: {integrity: sha512-zbVuJb5gTGSrR1EREDh3DUCyCgacAaIwAashvatXjBYfmIqDiuBRGchj4kT9ekjvAG51fK/VWbWHSeye5x4vvg==}
-
   vite@5.4.11:
     resolution: {integrity: sha512-c7jFQRklXua0mTzneGW9QVyxFjUgwcihC4bXEtujIo2ouWCe1Ajt/amn2PCxYnhYfd5k09JX3SB7OYWFKYqj8Q==}
     engines: {node: ^18.0.0 || >=20.0.0}
@@ -3450,8 +3444,6 @@ snapshots:
       - sugarss
       - supports-color
       - terser
-
-  vite-plugin-wasm-module-workers@0.0.2: {}
 
   vite@5.4.11(@types/node@22.10.1):
     dependencies:
