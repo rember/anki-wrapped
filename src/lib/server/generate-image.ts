@@ -11,13 +11,14 @@ import * as Fonts from './fonts';
 
 // #:
 
+const { default: resvgwasm } = await import(/* @vite-ignore */ `${URL_WASM_RESVG}?module`);
+
+// #:
+
 export class GeneratorImage extends Effect.Service<GeneratorImage>()('GeneratorImage', {
 	effect: Effect.gen(function* () {
 		const fonts = yield* Fonts.Fonts;
 
-		const { default: resvgwasm } = yield* Effect.promise(
-			() => import(/* @vite-ignore */ `${URL_WASM_RESVG}?module`)
-		);
 		yield* Effect.promise(() => initWasmResvg(resvgwasm));
 
 		// ##: generateSvg
