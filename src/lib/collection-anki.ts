@@ -1,6 +1,6 @@
 import { browser } from '$app/environment';
 import { SqliteClient } from '@effect/sql-sqlite-wasm';
-import { Data, Effect, Layer, Option, Record } from 'effect';
+import { Array, Data, Effect, Layer, Option, pipe, Record, Schema, String } from 'effect';
 import * as fzstd from 'fzstd';
 import JSZip from 'jszip';
 
@@ -53,10 +53,120 @@ export class CollectionAnki extends Effect.Service<CollectionAnki>()('Collection
 				// Load SQLite database in memory
 				yield* sql.import(bytesCollectionAnki);
 
-				const cntCardsCreated = yield* sql`SELECT COUNT(*) AS cards_created
-          FROM cards
-          WHERE id BETWEEN ${TS_START} AND ${TS_END}`;
-				console.log('cntCardsCreated', cntCardsCreated);
+				// Query: countCardsCreated
+				const countCardsCreated = yield* pipe(
+					sql`
+						SELECT
+							COUNT(*) AS cards_created
+						FROM
+							cards
+						WHERE
+							id BETWEEN ${TS_START} AND ${TS_END}
+					`,
+					Effect.flatMap(
+						Schema.decodeUnknown(Schema.Tuple(Schema.Struct({ cards_created: Schema.Number })))
+					),
+					Effect.map((rows) => rows[0].cards_created)
+				);
+
+				// Query: countReviews
+				// NOTE: We filter out reviews with `revlog.type = 4`, ie. "manual".
+				// The entries are created when rescheduling cards (for example when
+				// switching to FSRS).
+				// REFS: https://forums.ankiweb.net/t/edit-card-history-in-db-editor/38155
+				const countReviews = yield* pipe(
+					sql`
+						SELECT
+							COUNT(*) AS count_reviews
+						FROM
+							revlog
+						WHERE
+							id BETWEEN ${TS_START} AND ${TS_END}
+							AND type != 4
+					`,
+					Effect.flatMap(
+						Schema.decodeUnknown(Schema.Tuple(Schema.Struct({ count_reviews: Schema.Number })))
+					),
+					Effect.map((rows) => rows[0].count_reviews)
+				);
+
+				// Query: minutesSpentReviewing
+				const minutesSpentReviewing = yield* pipe(
+					sql`
+						SELECT
+							SUM(time) / 60000.0 AS minutes_spent_reviewing
+						FROM
+							revlog
+						WHERE
+							revlog.id BETWEEN ${TS_START} AND ${TS_END}
+							AND revlog.type != 4
+					`,
+					Effect.flatMap(
+						Schema.decodeUnknown(
+							Schema.Tuple(Schema.Struct({ minutes_spent_reviewing: Schema.Number }))
+						)
+					),
+					Effect.map((rows) => Math.round(rows[0].minutes_spent_reviewing))
+				);
+
+				// Query: top5DecksByCountReviews
+				const top5DecksByCountReviews = yield* pipe(
+					sql`
+						SELECT
+							d.name AS name,
+							COUNT(r.id) AS count_reviews
+						FROM
+							revlog r
+							JOIN cards c ON r.cid = c.id
+							JOIN decks d ON c.did = d.id
+						WHERE
+							r.id BETWEEN ${TS_START} AND ${TS_END}
+							AND r.type != 4
+						GROUP BY
+							d.id
+						ORDER BY
+							count_reviews DESC
+						LIMIT
+							5
+					`,
+					Effect.flatMap(
+						Schema.decodeUnknown(Schema.Array(Schema.Struct({ name: Schema.String })))
+					),
+					Effect.map(Array.map(({ name }) => pipe(name, String.split('\x1F'), Array.lastNonEmpty)))
+				);
+
+				// Query: heatmapReviews
+				const heatmapReviews = yield* pipe(
+					sql`
+						SELECT
+							strftime ('%Y-%m-%d', datetime (id / 1000, 'unixepoch')) AS date_iso_review,
+							COUNT(*) AS count_reviews
+						FROM
+							revlog r
+						WHERE
+							r.id BETWEEN ${TS_START} AND ${TS_END}
+							AND r.type != 4
+						GROUP BY
+							date_iso_review
+						ORDER BY
+							date_iso_review;
+					`,
+					Effect.flatMap(
+						Schema.decodeUnknown(
+							Schema.Array(
+								Schema.Struct({ date_iso_review: Schema.String, count_reviews: Schema.Number })
+							)
+						)
+					)
+				);
+
+				console.log({
+					countCardsCreated,
+					countReviews,
+					minutesSpentReviewing,
+					top5DecksByCountReviews,
+					heatmapReviews
+				});
 			});
 
 		// ##:
