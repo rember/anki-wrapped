@@ -1,3 +1,9 @@
+// REFS:
+// - (Convert SVG into PNG in Cloudflare worker) https://hrishikeshpathak.com/tips/convert-svg-to-png-cloudflare-worker/
+// - (vite-plugin-wasm-module-workers) https://www.npmjs.com/package/vite-plugin-wasm-module-workers
+
+import { initWasm as initWasmResvg, Resvg } from '@resvg/resvg-wasm';
+import URL_WASM_RESVG from '@resvg/resvg-wasm/index_bg.wasm?url';
 import { Effect } from 'effect';
 import satori, { type SatoriOptions } from 'satori';
 import type { DataImage } from '../shared/values';
@@ -8,6 +14,11 @@ import * as Fonts from './fonts';
 export class GeneratorImage extends Effect.Service<GeneratorImage>()('GeneratorImage', {
 	effect: Effect.gen(function* () {
 		const fonts = yield* Fonts.Fonts;
+
+		const { default: resvgwasm } = yield* Effect.promise(
+			() => import(/* @vite-ignore */ `${URL_WASM_RESVG}?module`)
+		);
+		yield* Effect.promise(() => initWasmResvg(resvgwasm));
 
 		// ##: generateSvg
 
@@ -45,18 +56,21 @@ export class GeneratorImage extends Effect.Service<GeneratorImage>()('GeneratorI
 
 		// ##: renderPng
 
-		// const renderPng = (args: { dataImage: DataImage; svg: string }) =>
-		// 	Effect.sync(() => {
-		// 		const renderer = new Resvg(args.svg, { background: 'white' });
-		// 		const bufferPng = renderer.render().asPng();
-		// 		return bufferPng;
-		// 	});
+		const renderPng = (args: { dataImage: DataImage; svg: string }) =>
+			Effect.sync(() => {
+				const renderer = new Resvg(args.svg, {
+					background: 'white',
+					font: { loadSystemFonts: false }
+				});
+				const bufferPng = renderer.render().asPng();
+				return bufferPng;
+			});
 
 		// ##:
 
 		return {
-			generateSvg
-			// renderPng
+			generateSvg,
+			renderPng
 		};
 	}),
 	dependencies: [Fonts.Fonts.Default]

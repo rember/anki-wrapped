@@ -1,6 +1,7 @@
 import * as Kit from '@sveltejs/kit';
 import { Cause, Effect, Exit, identity, Layer, ManagedRuntime, pipe, Tracer } from 'effect';
 import * as Fonts from './fonts';
+import * as Router from './router';
 import * as GeneratorImage from './generate-image';
 import * as SvelteKit from './svelte-kit';
 
@@ -9,9 +10,13 @@ import * as SvelteKit from './svelte-kit';
 /**
  * App-wide services that are created once the server starts.
  */
-export type Services = Fonts.Fonts | GeneratorImage.GeneratorImage;
+export type Services = Fonts.Fonts | GeneratorImage.GeneratorImage | Router.Router;
 
-export const layer = Layer.mergeAll(Fonts.Fonts.Default, GeneratorImage.GeneratorImage.Default);
+export const layer = Layer.mergeAll(
+	Fonts.Fonts.Default,
+	GeneratorImage.GeneratorImage.Default,
+	Router.Router.Default
+);
 
 export const runtime: ManagedRuntime.ManagedRuntime<Services, never> = ManagedRuntime.make(
 	pipe(layer, Layer.tapErrorCause(Effect.logError), Layer.orDie)
