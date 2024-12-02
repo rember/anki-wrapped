@@ -31,7 +31,4 @@ export class Redirect extends Data.TaggedError('SvelteKit/Redirect')<{
 
 // #:
 
-export class ServerLoadEvent extends Context.Tag("@app-web/server/SvelteKit/ServerLoadEvent")<
-  ServerLoadEvent,
-  Kit.ServerLoadEvent
->() {}
+export class LoadEvent extends Context.Tag('SvelteKit/LoadEvent')<LoadEvent, Kit.LoadEvent>() {}

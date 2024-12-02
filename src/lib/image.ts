@@ -1,23 +1,33 @@
-// REFS:
-// - (Convert SVG into PNG in Cloudflare worker) https://hrishikeshpathak.com/tips/convert-svg-to-png-cloudflare-worker/
-// - (vite-plugin-wasm-module-workers) https://www.npmjs.com/package/vite-plugin-wasm-module-workers
-
+import { browser } from '$app/environment';
 import { initWasm as initWasmResvg, Resvg } from '@resvg/resvg-wasm';
-import { Effect } from 'effect';
+import { Effect, pipe } from 'effect';
 import satori, { type SatoriOptions } from 'satori';
-import type { DataImage } from '../shared/values';
-import * as Fonts from './fonts';
+import type { DataImage } from './values';
 
 // #:
 
-export class GeneratorImage extends Effect.Service<GeneratorImage>()('GeneratorImage', {
+export const URL_FONT_INTER =
+	'https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-400-normal.ttf';
+
+// #:
+
+export class Image extends Effect.Service<Image>()('Image', {
 	effect: Effect.gen(function* () {
-		const fonts = yield* Fonts.Fonts;
+		// ##: Load fonts
+
+		const fontInter = yield* pipe(
+			Effect.promise(() => fetch(URL_FONT_INTER)),
+			Effect.andThen((response) => response.arrayBuffer())
+		);
 
 		// ##: Init Resvg WASM
 		// TODO: Load Resvg correctly instead of from a CDN.
 
-		yield* Effect.promise(() => initWasmResvg('https://unpkg.com/@resvg/resvg-wasm/index_bg.wasm'));
+		if (browser) {
+			yield* Effect.promise(() =>
+				initWasmResvg('https://unpkg.com/@resvg/resvg-wasm/index_bg.wasm')
+			);
+		}
 
 		// ##: generateSvg
 
@@ -29,7 +39,7 @@ export class GeneratorImage extends Effect.Service<GeneratorImage>()('GeneratorI
 			fonts: [
 				{
 					name: 'Inter',
-					data: fonts.fontInter,
+					data: fontInter,
 					weight: 400,
 					style: 'normal'
 				}
@@ -71,6 +81,5 @@ export class GeneratorImage extends Effect.Service<GeneratorImage>()('GeneratorI
 			generateSvg,
 			renderPng
 		};
-	}),
-	dependencies: [Fonts.Fonts.Default]
+	})
 }) {}
