@@ -13,13 +13,6 @@ export const URL_FONT_INTER =
 
 export class Image extends Effect.Service<Image>()('Image', {
 	effect: Effect.gen(function* () {
-		// ##: Load fonts
-
-		const fontInter = yield* pipe(
-			Effect.promise(() => fetch(URL_FONT_INTER)),
-			Effect.andThen((response) => response.arrayBuffer())
-		);
-
 		// ##: Init Resvg WASM
 		// TODO: Load Resvg correctly instead of from a CDN.
 
@@ -28,6 +21,13 @@ export class Image extends Effect.Service<Image>()('Image', {
 				initWasmResvg('https://unpkg.com/@resvg/resvg-wasm/index_bg.wasm')
 			);
 		}
+
+		// ##: Load fonts
+
+		const fontInter = yield* pipe(
+			Effect.promise(() => fetch(URL_FONT_INTER)),
+			Effect.andThen((response) => response.arrayBuffer())
+		);
 
 		// ##: generateSvg
 
