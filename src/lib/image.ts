@@ -34,8 +34,8 @@ export class Image extends Effect.Service<Image>()('Image', {
 		// Creating this object here should improve performance
 		// REFS: https://github.com/vercel/satori/issues/590
 		const optionsSatori: SatoriOptions = {
-			width: 600,
-			height: 400,
+			width: 360,
+			height: 640,
 			fonts: [
 				{
 					name: 'Inter',
@@ -53,8 +53,22 @@ export class Image extends Effect.Service<Image>()('Image', {
 						{
 							type: 'div',
 							props: {
-								children: `hello, world ${args.dataImage.count}`,
-								style: { color: 'blue' }
+								style: { display: 'flex' },
+								children: [
+									{
+										type: 'div',
+										props: {
+											style: { color: 'blue' },
+											children: `hello, world ${args.dataImage.count}`
+										}
+									},
+									{
+										type: 'div',
+										props: {
+											style: { width: '200px', height: '200px', backgroundColor: 'red' }
+										}
+									}
+								]
 							}
 						},
 						optionsSatori
@@ -68,8 +82,13 @@ export class Image extends Effect.Service<Image>()('Image', {
 		const renderPng = (args: { dataImage: DataImage; svg: string }) =>
 			Effect.sync(() => {
 				const renderer = new Resvg(args.svg, {
+					fitTo: {
+						mode: 'width',
+						value: 1080
+					},
 					background: 'white',
-					font: { loadSystemFonts: false }
+					font: { loadSystemFonts: false },
+					textRendering: 1
 				});
 				const bufferPng = renderer.render().asPng();
 				return bufferPng;
