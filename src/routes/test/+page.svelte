@@ -18,10 +18,12 @@
 
 {#if $stateCollectionAnki$._tag === 'Idle'}
 	<Dropzone
-		accept="application/x-colpkg"
 		multiple={false}
 		on:drop={(e) => {
 			if (e.detail.acceptedFiles.length === 0) {
+				return;
+			}
+			if (!e.detail.acceptedFiles[0].name.endsWith('.colpkg')) {
 				return;
 			}
 			if (e.detail.acceptedFiles.length > 1) {
