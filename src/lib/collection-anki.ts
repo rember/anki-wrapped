@@ -3,6 +3,7 @@ import { SqliteClient } from '@effect/sql-sqlite-wasm';
 import { Array, Data, Effect, Layer, Option, pipe, Record, Schema, String } from 'effect';
 import * as fzstd from 'fzstd';
 import JSZip from 'jszip';
+import { DataImage, DataImageFromBase64 } from './values';
 
 // #:
 
@@ -132,14 +133,18 @@ export class CollectionAnki extends Effect.Service<CollectionAnki>()('Collection
 					Effect.flatMap(
 						Schema.decodeUnknown(Schema.Array(Schema.Struct({ name: Schema.String })))
 					),
-					Effect.map(Array.map(({ name }) => pipe(name, String.split('\x1F'), Array.lastNonEmpty)))
+					Effect.map(
+						Array.map(({ name }) => ({
+							name: pipe(name, String.split('\x1F'), Array.lastNonEmpty)
+						}))
+					)
 				);
 
 				// Query: heatmapReviews
 				const heatmapReviews = yield* pipe(
 					sql`
 						SELECT
-							strftime ('%Y-%m-%d', datetime (id / 1000, 'unixepoch')) AS date_iso_review,
+							strftime ('%Y-%m-%d', datetime (id / 1000, 'unixepoch')) AS date_iso,
 							COUNT(*) AS count_reviews
 						FROM
 							revlog r
@@ -147,26 +152,36 @@ export class CollectionAnki extends Effect.Service<CollectionAnki>()('Collection
 							r.id BETWEEN ${TS_START} AND ${TS_END}
 							AND r.type != 4
 						GROUP BY
-							date_iso_review
+							date_iso
 						ORDER BY
-							date_iso_review;
+							date_iso;
 					`,
 					Effect.flatMap(
 						Schema.decodeUnknown(
-							Schema.Array(
-								Schema.Struct({ date_iso_review: Schema.String, count_reviews: Schema.Number })
-							)
+							Schema.Array(Schema.Struct({ date_iso: Schema.String, count_reviews: Schema.Number }))
 						)
+					),
+					Effect.map(
+						Array.map(({ date_iso, count_reviews }) => ({
+							dateIso: date_iso,
+							countReviews: count_reviews
+						}))
 					)
 				);
 
-				console.log({
+				// Decode as DataImage
+				const dataImage = yield* Schema.decode(DataImage)({
 					countCardsCreated,
 					countReviews,
 					minutesSpentReviewing,
 					top5DecksByCountReviews,
 					heatmapReviews
 				});
+				const base64 = Schema.encodeSync(DataImageFromBase64)(dataImage);
+
+				console.log('dataImage', dataImage);
+				console.log('base64', base64);
+				console.log('base64 length', base64.length);
 			});
 
 		// ##:
