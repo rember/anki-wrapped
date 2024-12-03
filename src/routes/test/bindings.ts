@@ -1,4 +1,6 @@
+import { goto } from '$app/navigation';
 import * as CollectionAnki from '$lib/collection-anki';
+import * as Storage from '$lib/storage';
 import { Effect, identity } from 'effect';
 import { writable, type Readable } from 'svelte/store';
 
@@ -22,6 +24,7 @@ export interface Bindings {
 
 export const make = Effect.gen(function* () {
 	const collectionAnki = yield* CollectionAnki.CollectionAnki;
+	const storage = yield* Storage.Storage;
 
 	// ##: State
 
@@ -32,7 +35,9 @@ export const make = Effect.gen(function* () {
 	const onFileSelected = ({ file }: { file: File }) =>
 		Effect.gen(function* () {
 			stateCollectionAnki$.set({ _tag: 'Loading', file });
-			yield* collectionAnki.processFile({ file });
+			const dataImage = yield* collectionAnki.processFile({ file });
+			yield* storage.createDataImage({ dataImage });
+			yield* Effect.promise(() => goto('/result-2024'));
 		}).pipe(Effect.tapErrorCause(Effect.logError), Effect.orDie);
 
 	// ##:

@@ -1,5 +1,4 @@
-import { pipe, Schema } from 'effect';
-import pako from 'pako';
+import { Schema } from 'effect';
 
 // #: DataImage
 
@@ -28,18 +27,7 @@ export interface DataImageJSON extends Schema.Schema.Encoded<typeof DataImage> {
 
 // #: DataImageFromBase64
 
-export const DataImageFromBase64 = pipe(
-	Schema.Uint8ArrayFromBase64,
-	Schema.compose(
-		Schema.transform(Schema.Uint8ArrayFromSelf, Schema.String, {
-			strict: true,
-			decode: (bytes) => {
-				return pako.inflate(bytes, { to: 'string' });
-			},
-			encode: (str) => {
-				return pako.deflate(str);
-			}
-		})
-	),
-	Schema.compose(Schema.parseJson(DataImage))
+export const DataImageFromBase64 = Schema.compose(
+	Schema.StringFromBase64,
+	Schema.parseJson(DataImage)
 );

@@ -59,7 +59,7 @@ export class Image extends Effect.Service<Image>()('Image', {
 										type: 'div',
 										props: {
 											style: { color: 'blue' },
-											children: `hello, world ${args.dataImage.count}`
+											children: `hello, world ${args.dataImage.countCardsCreated}`
 										}
 									},
 									{

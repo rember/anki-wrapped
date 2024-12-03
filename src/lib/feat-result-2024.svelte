@@ -2,19 +2,20 @@
 	import { runtime } from '$lib/runtime';
 	import { Exit, Scope } from 'effect';
 	import { onDestroy } from 'svelte';
-	import type { PageData } from './$types';
-	import * as Bindings from './bindings';
+	import * as FeatResult2024 from './feat-result-2024';
+	import type { DataImage } from './values';
 
 	// ##: Props
 
-	export let data: PageData;
+	export let dataImage: DataImage;
+	export let svg: string;
 
 	// ##: Bindings
 
 	const scope = Scope.make().pipe(runtime.runSync);
 	onDestroy(() => void Scope.close(scope, Exit.succeed(undefined)).pipe(runtime.runFork));
 
-	const { stateImage$, downloadImage } = Bindings.make(data).pipe(
+	const { stateImage$, downloadImage } = FeatResult2024.make({ dataImage, svg }).pipe(
 		Scope.extend(scope),
 		runtime.runSync
 	);
@@ -23,7 +24,7 @@
 <h1>This image is SSRed</h1>
 
 <div>
-	{@html data.svg}
+	{@html svg}
 </div>
 
 {#if $stateImage$._tag === 'Loading'}
