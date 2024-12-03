@@ -25,7 +25,7 @@
 	/>
 	<meta property="og:url" content="https://ankiwrapped.com" />
 	<meta property="og:type" content="website" />
-	<meta property="og:image" content="https://anki-wrapped.com/og-image.png" />
+	<meta property="og:image" content="https://ankiwrapped.com/og-image.png" />
 	<meta property="og:site_name" content="Anki Wrapped" />
 	<meta property="og:locale" content="en_US" />
 
@@ -38,7 +38,7 @@
 		name="twitter:description"
 		content="Anki Wrapped is like Spotify Wrapped, but for your Anki flashcard collection. Discover fun stats about your learning habits with spaced repetition."
 	/>
-	<meta name="twitter:image" content="https://anki-wrapped.com/images/preview.png" />
+	<meta name="twitter:image" content="https://ankiwrapped.com/images/preview.png" />
 	<meta name="twitter:card" content="summary_large_image" />
 </svelte:head>
 
