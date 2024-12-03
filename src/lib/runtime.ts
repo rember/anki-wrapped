@@ -2,13 +2,18 @@ import * as Kit from '@sveltejs/kit';
 import { Cause, Effect, Exit, identity, Layer, ManagedRuntime, pipe, Tracer } from 'effect';
 import * as CollectionAnki from './collection-anki';
 import * as Image from './image';
+import * as PostHog from './posthog';
 import * as SvelteKit from './svelte-kit';
 
 // #: Runtime
 
-export type Services = Image.Image | CollectionAnki.CollectionAnki;
+export type Services = Image.Image | CollectionAnki.CollectionAnki | PostHog.PostHog;
 
-export const layer = Layer.mergeAll(Image.Image.Default, CollectionAnki.CollectionAnki.Default);
+export const layer = Layer.mergeAll(
+	Image.Image.Default,
+	CollectionAnki.CollectionAnki.Default,
+	PostHog.PostHog.Default
+);
 
 export const runtime: ManagedRuntime.ManagedRuntime<Services, never> = ManagedRuntime.make(
 	pipe(layer, Layer.tapErrorCause(Effect.logError), Layer.orDie)

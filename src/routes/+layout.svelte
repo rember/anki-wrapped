@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
+	import { afterNavigate, beforeNavigate } from '$app/navigation';
+	import * as PostHog from '$lib/posthog';
 	import { runtime } from '$lib/runtime';
 	import '@fontsource-variable/inter';
 	import { Array, Effect, pipe, Random } from 'effect';
@@ -8,7 +11,15 @@
 
 	let { children } = $props();
 
-	// ##:
+	// ##: Posthog
+
+	if (browser) {
+		const posthog = PostHog.PostHog.pipe(runtime.runSync);
+		beforeNavigate(() => posthog.capture({ event: '$pageleave' }));
+		afterNavigate(() => posthog.capture({ event: '$pageview' }));
+	}
+
+	// ##: Background stars
 
 	const stars = pipe(
 		Array.replicate(
