@@ -10,7 +10,7 @@ export const DataImage = Schema.Struct({
 		Schema.Struct({
 			name: Schema.String
 		})
-	).pipe(Schema.maxLength(5)),
+	),
 	heatmapReviews: Schema.Array(
 		Schema.Struct({
 			// String representing a calendar date in the ISO format with day precision,
@@ -31,3 +31,10 @@ export const DataImageFromBase64 = Schema.compose(
 	Schema.StringFromBase64,
 	Schema.parseJson(DataImage)
 );
+
+// #: Constants
+// 01 Dec 2023, 1am CEST
+export const TS_START = 1701388800000;
+
+// 01 Dec 2024, 1am CEST
+export const TS_END = 1733011200000;

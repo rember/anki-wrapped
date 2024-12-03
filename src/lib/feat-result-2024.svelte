@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { runtime } from '$lib/runtime';
-	import { Exit, Scope } from 'effect';
+	import { Array, Exit, Option, pipe, Record, Scope } from 'effect';
 	import { onDestroy } from 'svelte';
+	import CompImage from './comp-image.svelte';
 	import * as FeatResult2024 from './feat-result-2024';
-	import type { DataImage } from './values';
+	import { TS_END, TS_START, type DataImage } from './values';
 
 	// ##: Props
 
@@ -23,13 +24,19 @@
 
 <h1>This image is SSRed</h1>
 
-<div>
-	{@html svg}
+<!-- TODO: -->
+<div class="flex flex-row gap-16">
+	<div>
+		{@html svg}
+	</div>
+
+	<CompImage {dataImage} />
 </div>
 
 {#if $stateImage$._tag === 'Loading'}
 	Loading...
 {/if}
 {#if $stateImage$._tag === 'Success'}
-	<button onclick={() => void downloadImage.pipe(runtime.runFork)}> Download PNG </button>
+	<!-- TODO: -->
+	<button onclick={() => void downloadImage.pipe(runtime.runFork)}>Download PNG</button>
 {/if}

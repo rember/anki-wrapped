@@ -3,7 +3,7 @@ import { SqliteClient } from '@effect/sql-sqlite-wasm';
 import { Array, Data, Effect, Layer, Option, pipe, Record, Schema, String } from 'effect';
 import * as fzstd from 'fzstd';
 import JSZip from 'jszip';
-import { DataImage } from './values';
+import { DataImage, TS_END, TS_START } from './values';
 
 // #:
 
@@ -195,14 +195,6 @@ export class CollectionAnki extends Effect.Service<CollectionAnki>()('Collection
 		browser ? SqliteClient.layerMemory({}) : Layer.succeed(SqliteClient.SqliteClient, {} as any)
 	]
 }) {}
-
-// #: Constants
-
-// 01 Dec 2023
-const TS_START = 1701388800000;
-
-// 01 Dec 2024
-const TS_END = 1733011200000;
 
 // #: Errors
 
