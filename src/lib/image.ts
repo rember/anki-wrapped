@@ -1,21 +1,33 @@
 import { browser } from '$app/environment';
 import { initWasm as initWasmResvg, Resvg } from '@resvg/resvg-wasm';
 import { Array, Effect, Option, pipe, Random, Record } from 'effect';
-import satori, { type SatoriOptions } from 'satori';
+import type { SatoriOptions } from 'satori';
 import { TS_END, TS_START, type DataImage } from './values';
 
 // #:
 
 export class Image extends Effect.Service<Image>()('Image', {
 	effect: Effect.gen(function* () {
-		// ##: Init Resvg WASM
+		// ##: Return empty service in SSR
+
+		if (!browser) {
+			return {
+				generateSvg: () => Effect.dieMessage('Not supported in SSR'),
+				renderPng: () => Effect.dieMessage('Not supported in SSR')
+			};
+		}
+
+		// ##: Import large libs dynamically to improve code splitting
 		// TODO: Load Resvg correctly instead of from a CDN.
 
-		if (browser) {
-			yield* Effect.promise(() =>
-				initWasmResvg('https://unpkg.com/@resvg/resvg-wasm/index_bg.wasm')
-			);
-		}
+		const satori = yield* pipe(
+			Effect.promise(() => import('satori')),
+			Effect.map((_) => _.default)
+		);
+
+		// ##: Init WASM libraries
+
+		yield* Effect.promise(() => initWasmResvg('https://unpkg.com/@resvg/resvg-wasm/index_bg.wasm'));
 
 		// ##: Load fonts
 

@@ -1,8 +1,6 @@
 import { browser } from '$app/environment';
-import { SqliteClient } from '@effect/sql-sqlite-wasm';
-import { Array, Data, Effect, Layer, Option, pipe, Record, Schema, String } from 'effect';
+import { Array, Data, Effect, Option, pipe, Record, Schema, String } from 'effect';
 import * as fzstd from 'fzstd';
-import JSZip from 'jszip';
 import { DataImage, TS_END, TS_START } from './values';
 
 // #:
@@ -17,14 +15,28 @@ export class CollectionAnki extends Effect.Service<CollectionAnki>()('Collection
 			};
 		}
 
-		// ##:
+		// ##: Import large libs dynamically to improve code splitting
 
-		const sql = yield* SqliteClient.SqliteClient;
+		const { JSZip, SqliteClient } = yield* Effect.all(
+			{
+				JSZip: pipe(
+					Effect.promise(() => import('jszip')),
+					Effect.map((_) => _.default)
+				),
+				SqliteClient: pipe(
+					Effect.promise(() => import('@effect/sql-sqlite-wasm')),
+					Effect.map((_) => _.SqliteClient)
+				)
+			},
+			{ concurrency: 'unbounded' }
+		);
 
 		// ##: processFile
 
 		const processFile = ({ file }: { file: File }) =>
 			Effect.gen(function* () {
+				const sql = yield* SqliteClient.SqliteClient;
+
 				// Unzip the .colpkg file
 				const filesColpkg = yield* Effect.tryPromise({
 					try: () => JSZip.loadAsync(file),
@@ -183,17 +195,14 @@ export class CollectionAnki extends Effect.Service<CollectionAnki>()('Collection
 				});
 
 				return dataImage;
-			});
+			}).pipe(Effect.provide(SqliteClient.layerMemory({})));
 
 		// ##:
 
 		return {
 			processFile
 		};
-	}),
-	dependencies: [
-		browser ? SqliteClient.layerMemory({}) : Layer.succeed(SqliteClient.SqliteClient, {} as any)
-	]
+	})
 }) {}
 
 // #: Errors
