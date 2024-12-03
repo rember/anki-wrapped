@@ -9,11 +9,15 @@ import { DataImage } from './values';
 
 export class CollectionAnki extends Effect.Service<CollectionAnki>()('CollectionAnki', {
 	effect: Effect.gen(function* () {
+		// ##: Return empty service in SSR
+
 		if (!browser) {
 			return {
 				processFile: () => Effect.dieMessage('Not supported in SSR')
 			};
 		}
+
+		// ##:
 
 		const sql = yield* SqliteClient.SqliteClient;
 
