@@ -1,5 +1,5 @@
 import { browser } from '$app/environment';
-import { Effect } from 'effect';
+import { Effect, pipe } from 'effect';
 import type * as PostHogJS from 'posthog-js';
 
 // #: Types
@@ -19,6 +19,19 @@ export class PostHog extends Effect.Service<PostHog>()('PostHog', {
 		if (!browser) {
 			return {
 				capture: () => Effect.dieMessage('Not supported in SSR')
+			};
+		}
+
+		// ##: Return a mock service in development
+
+		if (import.meta.env.MODE === 'development') {
+			return {
+				capture: (args: ArgsCapture) =>
+					pipe(
+						Effect.log(`Capture ${args.event}`),
+						Effect.annotateLogs(args.properties ?? {}),
+						Effect.withLogSpan('PostHog')
+					)
 			};
 		}
 
