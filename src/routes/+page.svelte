@@ -39,6 +39,8 @@
 		content="Anki Wrapped is like Spotify Wrapped, but for your Anki flashcard collection. Discover fun stats about your learning habits with spaced repetition."
 	/>
 	<meta name="twitter:image" content="https://ankiwrapped.com/og-image.png" />
+	<meta name="twitter:creator" content="@giacomo_ran" />
+	<meta name="twitter:site" content="@getrember" />
 	<meta name="twitter:card" content="summary_large_image" />
 </svelte:head>
 
