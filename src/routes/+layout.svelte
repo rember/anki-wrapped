@@ -14,9 +14,20 @@
 	// ##: Posthog
 
 	if (browser) {
-		const posthog = PostHog.PostHog.pipe(runtime.runSync);
-		beforeNavigate(() => posthog.capture({ event: '$pageleave' }));
-		afterNavigate(() => posthog.capture({ event: '$pageview' }));
+		beforeNavigate(() =>
+			pipe(
+				PostHog.PostHog,
+				Effect.andThen((posthog) => posthog.capture({ event: '$pageleave' })),
+				runtime.runSync
+			)
+		);
+		afterNavigate(() =>
+			pipe(
+				PostHog.PostHog,
+				Effect.andThen((posthog) => posthog.capture({ event: '$pageview' })),
+				runtime.runSync
+			)
+		);
 	}
 
 	// ##: Background stars
