@@ -411,7 +411,7 @@ const makeTemplateImage = ({ dataImage }: { dataImage: DataImage }) =>
 														color: 'white',
 														fontWeight: '700'
 													},
-													children: [ix.toLocaleString('en-US')]
+													children: [(ix + 1).toLocaleString('en-US')]
 												}
 											},
 											{

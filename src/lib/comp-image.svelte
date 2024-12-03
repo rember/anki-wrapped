@@ -106,7 +106,7 @@
 					{#each dataImage.top5DecksByCountReviews as { name }, ix}
 						<div class="flex gap-[12px]">
 							<div class="font-[700] text-white">
-								{ix.toLocaleString('en-US')}
+								{(ix + 1).toLocaleString('en-US')}
 							</div>
 							<div class="truncate font-[700] text-white">
 								{stripEmojis(name)}
