@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /result-2024/
+Disallow: /test/
+Sitemap: https://ankiwrapped.com/sitemap.xml

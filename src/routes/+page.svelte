@@ -1,37 +1,59 @@
-<script lang="ts">
-	import { runtime } from '$lib/runtime';
-	import { Exit, Scope } from 'effect';
-	import { onDestroy } from 'svelte';
-	import Dropzone from 'svelte-file-dropzone';
-	import * as Bindings from './bindings';
-
-	// ##:
-
-	const scope = Scope.make().pipe(runtime.runSync);
-	onDestroy(() => void Scope.close(scope, Exit.succeed(undefined)).pipe(runtime.runFork));
-
-	const { stateCollectionAnki$, onFileSelected } = Bindings.make.pipe(
-		Scope.extend(scope),
-		runtime.runSync
-	);
-</script>
-
-{#if $stateCollectionAnki$._tag === 'Idle'}
-	<Dropzone
-		accept="application/x-colpkg"
-		multiple={false}
-		on:drop={(e) => {
-			if (e.detail.acceptedFiles.length === 0) {
-				return;
-			}
-			if (e.detail.acceptedFiles.length > 1) {
-				throw new Error('Unreachable');
-			}
-			onFileSelected({ file: e.detail.acceptedFiles[0] }).pipe(runtime.runFork);
-		}}
+<svelte:head>
+	<meta name="title" content="Anki Wrapped: Your Year in Spaced Repetition Flashcards" />
+	<meta
+		name="description"
+		content="Anki Wrapped is like Spotify Wrapped, but for your Anki flashcard collection. Discover fun stats about your learning habits with spaced repetition."
 	/>
-{/if}
 
-{#if $stateCollectionAnki$._tag === 'Loading'}
-	Loading...
-{/if}
+	<!-- Open Graph Meta Tags -->
+	<meta property="og:title" content="Anki Wrapped: Your Year in Spaced Repetition Flashcards" />
+	<meta
+		property="og:description"
+		content="Anki Wrapped is like Spotify Wrapped, but for your Anki flashcard collection. Discover fun stats about your learning habits with spaced repetition."
+	/>
+	<meta property="og:url" content="https://ankiwrapped.com" />
+	<meta property="og:type" content="website" />
+	<meta property="og:image" content="https://anki-wrapped.com/og-image.png" />
+	<meta property="og:site_name" content="Anki Wrapped" />
+	<meta property="og:locale" content="en_US" />
+
+	<!-- Twitter Meta Tags -->
+	<meta name="twitter:title" content="Anki Wrapped: Your Year in Spaced Repetition Flashcards" />
+	<meta
+		name="twitter:description"
+		content="Anki Wrapped is like Spotify Wrapped, but for your Anki flashcard collection. Discover fun stats about your learning habits with spaced repetition."
+	/>
+	<meta name="twitter:image" content="https://anki-wrapped.com/images/preview.png" />
+	<meta name="twitter:card" content="summary_large_image" />
+
+	<!-- SEO Meta Tags -->
+	<meta
+		name="keywords"
+		content="Anki Wrapped, spaced repetition, Anki flashcards, year in review, Anki stats, flashcard stats, Rember, Anki collection"
+	/>
+	<meta name="robots" content="index, follow" />
+	<meta name="author" content="Rember Team" />
+</svelte:head>
+
+<div class="flex h-full flex-col items-center">
+	<div class="flex max-w-[36rem] flex-1 flex-col justify-center gap-8 px-4">
+		<h1 class="text-center text-7xl font-semibold text-white">Anki Wrapped</h1>
+		<p class="text-center text-2xl text-gray-300">
+			Your year in spaced repetition flashcards, like Spotify Wrapped but for your Anki collection.
+		</p>
+		<div class="mt-8 text-center text-2xl text-white">Coming soon</div>
+	</div>
+
+	<div
+		class="flex flex-wrap items-center justify-between gap-3 self-stretch px-6 py-3 text-sm text-white"
+	>
+		<a
+			href="https://rember.com"
+			class="flex items-center gap-2 rounded-full border border-gray-200 border-opacity-30 bg-gray-200 bg-opacity-60 px-4 py-2"
+		>
+			<div class="font-semibold">Built by the team behind</div>
+			<enhanced:img src="$lib/assets/rember-logo-text.png" class="mb-[0.39rem] w-14" alt="Rember" />
+		</a>
+		<div class="opacity-60">This tool is not affiliated with or endorsed by Anki</div>
+	</div>
+</div>
