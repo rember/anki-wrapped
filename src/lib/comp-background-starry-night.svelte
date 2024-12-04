@@ -28,8 +28,8 @@
 	);
 </script>
 
-<div class={`bg-starry-night ${klass}`}>
-	<div class="absolute inset-x-0 top-0 h-[70%]">
+<div class="bg-starry-night">
+	<div class="absolute inset-x-0 top-0 z-0 h-[70%]">
 		{#each stars as star}
 			<div
 				class="absolute rounded-full bg-white"
@@ -44,7 +44,9 @@
 		{/each}
 	</div>
 
-	{@render children()}
+	<div class={`z-10 size-full ${klass}`}>
+		{@render children()}
+	</div>
 </div>
 
 <style>
