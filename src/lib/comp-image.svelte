@@ -103,7 +103,7 @@
 						{(ix + 1).toLocaleString('en-US')}
 					</div>
 					<div class="truncate font-[700] text-white">
-						{stripEmojis(name)}
+						{stripEmojis(name).trim()}
 					</div>
 				</div>
 			{/each}

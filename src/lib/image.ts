@@ -427,7 +427,7 @@ const makeTemplateImage = ({ dataImage }: { dataImage: DataImage }) =>
 														textOverflow: 'ellipsis',
 														whiteSpace: 'nowrap'
 													},
-													children: [stripEmojis(name)]
+													children: [stripEmojis(name).trim()]
 												}
 											}
 										]
