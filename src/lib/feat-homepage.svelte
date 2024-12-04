@@ -82,14 +82,15 @@
 			</div>
 			<div class="flex flex-1 flex-col gap-3">
 				<div class="w-[318px] font-semibold text-gray-300 lg:w-full">
-					Drag the exported <span class="text-white">.colpkg</span> file here, or click to select a file
+					Drag the exported <span class="text-white">.colpkg</span> file, or click below to select a
+					file
 				</div>
 				<div
-					class="h-[168px] w-[318px] overflow-hidden rounded-xl border-4 border-dashed border-white border-opacity-30 bg-white bg-opacity-60 lg:w-full"
+					class="h-[168px] w-[318px] overflow-hidden rounded-xl border-4 border-dashed border-white border-opacity-30 bg-white bg-opacity-60 outline-none focus-within:bg-opacity-70 hover:bg-opacity-70 lg:w-full"
 				>
 					{#if $stateCollectionAnki$._tag === 'Idle'}
 						<Dropzone
-							containerClasses="size-full text-white flex justify-center items-center font-semibold p-4"
+							containerClasses="size-full text-white flex justify-center items-center font-semibold p-4 outline-none"
 							disableDefaultStyles={true}
 							multiple={false}
 							on:drop={(e) => {
@@ -126,7 +127,7 @@
 			href="https://rember.com"
 			target="_blank"
 			rel="noopener noreferrer"
-			class="flex items-center gap-2 rounded-full border border-gray-200 border-opacity-30 bg-gray-200 bg-opacity-60 px-4 py-2"
+			class="flex items-center gap-2 rounded-full border border-gray-200 border-opacity-30 bg-gray-200 bg-opacity-60 px-4 py-2 outline-none hover:bg-opacity-70 focus:bg-opacity-70"
 		>
 			<div class="font-semibold">Built by the team behind</div>
 			<enhanced:img src="$lib/assets/rember-logo-text.png" class="mb-[0.39rem] w-14" alt="Rember" />
