@@ -26,6 +26,7 @@
 		</h1>
 		<p class="text-center text-2xl text-gray-300">
 			Your year in spaced repetition flashcards, like Spotify Wrapped but for your Anki collection.
+			<span class="font-bold text-white">Your Anki data is processed in your browser.</span>
 		</p>
 	</div>
 
