@@ -3,23 +3,14 @@
 	import { Exit, Scope } from 'effect';
 	import { onDestroy } from 'svelte';
 	import * as FeatResult2024 from './feat-result-2024';
-	import { type DataImage } from './values';
-
-	// ##: Props
-
-	export let dataImage: DataImage;
-	export let svg: string;
 
 	// ##: Bindings
 
 	const scope = Scope.make().pipe(runtime.runSync);
 	onDestroy(() => void Scope.close(scope, Exit.succeed(undefined)).pipe(runtime.runFork));
 
-	const { statePng$, stateMarketingEmail$, downloadPng, createMarketingEmail, onInputEmail } =
-		FeatResult2024.make({
-			dataImage,
-			svg
-		}).pipe(Scope.extend(scope), runtime.runSync);
+	const { stateImage$, stateMarketingEmail$, downloadPng, createMarketingEmail, onInputEmail } =
+		FeatResult2024.make.pipe(Scope.extend(scope), runtime.runSync);
 </script>
 
 <div
@@ -27,8 +18,16 @@
 >
 	<!-- #: SVG -->
 
-	<div class="mt-2 h-[640px] w-[360px]">
-		{@html svg}
+	<div class="h-[640px] w-[360px]">
+		{#if $stateImage$._tag === 'GeneratingSvg'}
+			<div
+				class="flex size-full animate-pulse items-center justify-center bg-[#000c3a] font-semibold text-white opacity-40"
+			>
+				Generating image...
+			</div>
+		{:else}
+			{@html $stateImage$.svg}
+		{/if}
 	</div>
 
 	<div class="flex h-[650px] w-[360px] flex-col gap-8 pt-[2px]">
@@ -37,17 +36,20 @@
 		<div class="text-3xl font-bold text-[#000c3a]">Here is your 2024 Anki Wrapped</div>
 
 		<button
-			class="h-16 rounded-lg bg-[#000c3a] font-semibold text-white outline-none enabled:hover:bg-[#003d64] enabled:focus:bg-[#003d64] disabled:opacity-40"
-			disabled={$statePng$._tag !== 'Ready'}
+			class="h-16 rounded-lg bg-[#000c3a] font-semibold text-white outline-none enabled:hover:bg-[#003d64] enabled:focus:bg-[#003d64] disabled:animate-pulse disabled:opacity-40"
+			disabled={$stateImage$._tag !== 'Ready'}
 			onclick={() => void downloadPng.pipe(runtime.runFork)}
 		>
-			{#if $statePng$._tag === 'Rendering'}
+			{#if $stateImage$._tag === 'GeneratingSvg'}
+				Generating image...
+			{/if}
+			{#if $stateImage$._tag === 'RenderingPng'}
 				Rendering image...
 			{/if}
-			{#if $statePng$._tag === 'Ready'}
+			{#if $stateImage$._tag === 'Ready'}
 				Download image
 			{/if}
-			{#if $statePng$._tag === 'Downloaded'}
+			{#if $stateImage$._tag === 'Downloaded'}
 				Share the image with your friends!
 			{/if}
 		</button>
@@ -71,7 +73,7 @@
 				We are building a new spaced repetition system, interested?
 			</div>
 
-			<div class="flex gap-4">
+			<div class="flex gap-3">
 				{#if $stateMarketingEmail$._tag === 'Ready' || $stateMarketingEmail$._tag === 'Loading'}
 					<input
 						type="text"
