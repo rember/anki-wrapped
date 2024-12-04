@@ -6,6 +6,7 @@
 	import { runtime } from '$lib/runtime';
 	import '@fontsource-variable/inter';
 	import { Effect, pipe } from 'effect';
+	import { Toaster } from 'svelte-french-toast';
 	import '../app.css';
 
 	// ##: Props
@@ -31,6 +32,8 @@
 		);
 	}
 </script>
+
+<Toaster />
 
 <CompProgressBarNavigating />
 

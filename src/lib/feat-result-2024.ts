@@ -4,7 +4,8 @@ import * as Image from '$lib/image';
 import * as Storage from '$lib/storage';
 import { isUserAgentMobile } from '$lib/utils';
 import { Email, type DataImage } from '$lib/values';
-import { Effect, identity, Option, pipe, Schema } from 'effect';
+import { Data, Effect, identity, Option, pipe, Schema } from 'effect';
+import toast from 'svelte-french-toast';
 import { get, writable, type Readable } from 'svelte/store';
 
 // #:
@@ -122,7 +123,10 @@ export const make = Effect.gen(function* () {
 				blobPng: stateImage.blobPng
 			})
 		);
-	}).pipe(Effect.tapErrorCause(Effect.logError), Effect.orDie);
+	}).pipe(
+		Effect.tapErrorCause(Effect.logError),
+		Effect.catchAll(() => Effect.sync(() => toast.error('Something went wrong')))
+	);
 
 	const createMarketingEmail = Effect.gen(function* () {
 		const stateMarketingEmail = get(stateMarketingEmail$);
@@ -135,22 +139,32 @@ export const make = Effect.gen(function* () {
 
 		yield* Effect.sync(() => stateMarketingEmail$.set({ _tag: 'Loading', email }));
 
-		const response = yield* Effect.promise(() =>
-			fetch('https://www.rember.com/api/marketing/create-marketing-email', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ email, metadata: { source: 'ankiwrapped.com' } })
-			})
-		);
+		const response = yield* Effect.tryPromise({
+			try: () =>
+				fetch('https://www.rember.com/api/marketing/create-marketing-email', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ email, metadata: { source: 'ankiwrapped.com' } })
+				}),
+			catch: (error) => new ErrorCannotCreateMarketingEmail({ error })
+		});
 
 		if (response.ok) {
 			yield* Effect.sync(() => stateMarketingEmail$.set({ _tag: 'Success' }));
 		} else {
-			// TODO: Do this for all errors
-			yield* Effect.logWarning('Failed to create marketing email');
-			yield* Effect.sync(() => stateMarketingEmail$.set({ _tag: 'Ready', email: '' }));
+			yield* Effect.fail(new ErrorCannotCreateMarketingEmail({}));
 		}
-	}).pipe(Effect.tapErrorCause(Effect.logError), Effect.orDie);
+	}).pipe(
+		Effect.tapErrorCause(Effect.logError),
+		Effect.catchAll(() =>
+			pipe(
+				Effect.sync(() => toast.error('Something went wrong')),
+				Effect.andThen(() =>
+					Effect.sync(() => stateMarketingEmail$.set({ _tag: 'Ready', email: '' }))
+				)
+			)
+		)
+	);
 
 	const onInputEmail = ({ value }: { value: string }) =>
 		Effect.gen(function* () {
@@ -161,7 +175,7 @@ export const make = Effect.gen(function* () {
 			}
 
 			yield* Effect.sync(() => stateMarketingEmail$.set({ _tag: 'Ready', email: value }));
-		}).pipe(Effect.tapErrorCause(Effect.logError), Effect.orDie);
+		}).pipe(Effect.tapErrorCause(Effect.logError));
 
 	// ##: Side effects
 	// NOTE: We render the image as soon as the page load, we don't wait for
@@ -186,6 +200,7 @@ export const make = Effect.gen(function* () {
 					stateImage$.set({ _tag: 'Ready', dataImage, svg, blobPng });
 				}),
 				Effect.tapErrorCause(Effect.logError),
+				Effect.catchAll(() => Effect.sync(() => toast.error('Something went wrong'))),
 				Effect.forkScoped
 			);
 		}
@@ -203,3 +218,13 @@ export const make = Effect.gen(function* () {
 		onInputEmail
 	});
 });
+
+// #:
+
+export class ErrorCannotCreateMarketingEmail extends Data.TaggedError(
+	'FeatResult2024/CannotCreateMarketingEmail'
+)<{ error?: unknown | undefined }> {
+	override get message() {
+		return 'Failed to create marketing email, response is not successful';
+	}
+}

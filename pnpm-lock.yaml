@@ -47,6 +47,9 @@ importers:
       svelte-file-dropzone:
         specifier: ^2.0.9
         version: 2.0.9(svelte@5.3.0)
+      svelte-french-toast:
+        specifier: ^1.2.0
+        version: 1.2.0(svelte@5.3.0)
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^4.20241127.0
@@ -2308,10 +2311,20 @@ packages:
     peerDependencies:
       svelte: ^3.54.0 || ^4.0.0 || ^5
 
+  svelte-french-toast@1.2.0:
+    resolution: {integrity: sha512-5PW+6RFX3xQPbR44CngYAP1Sd9oCq9P2FOox4FZffzJuZI2mHOB7q5gJBVnOiLF5y3moVGZ7u2bYt7+yPAgcEQ==}
+    peerDependencies:
+      svelte: ^3.57.0 || ^4.0.0
+
   svelte-parse-markup@0.1.5:
     resolution: {integrity: sha512-T6mqZrySltPCDwfKXWQ6zehipVLk4GWfH1zCMGgRtLlOIFPuw58ZxVYxVvotMJgJaurKi1i14viB2GIRKXeJTQ==}
     peerDependencies:
       svelte: ^3.0.0 || ^4.0.0 || ^5.0.0-next.1
+
+  svelte-writable-derived@3.1.1:
+    resolution: {integrity: sha512-w4LR6/bYZEuCs7SGr+M54oipk/UQKtiMadyOhW0PTwAtJ/Ai12QS77sLngEcfBx2q4H8ZBQucc9ktSA5sUGZWw==}
+    peerDependencies:
+      svelte: ^3.2.1 || ^4.0.0-next.1 || ^5.0.0-next.94
 
   svelte@5.3.0:
     resolution: {integrity: sha512-R9v8vAlW/bO94S7QdBJMYveMyI8gMqNnGOtEVLPveNVws+CEiQHn8BNWrtIIpkB28IXLnmjV2HaRTJz31XJmIw==}
@@ -4376,7 +4389,16 @@ snapshots:
       file-selector: 0.6.0
       svelte: 5.3.0
 
+  svelte-french-toast@1.2.0(svelte@5.3.0):
+    dependencies:
+      svelte: 5.3.0
+      svelte-writable-derived: 3.1.1(svelte@5.3.0)
+
   svelte-parse-markup@0.1.5(svelte@5.3.0):
+    dependencies:
+      svelte: 5.3.0
+
+  svelte-writable-derived@3.1.1(svelte@5.3.0):
     dependencies:
       svelte: 5.3.0
 

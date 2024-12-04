@@ -2,6 +2,7 @@ import { goto } from '$app/navigation';
 import * as CollectionAnki from '$lib/collection-anki';
 import * as Storage from '$lib/storage';
 import { Effect, identity } from 'effect';
+import { toast } from 'svelte-french-toast';
 import { writable, type Readable } from 'svelte/store';
 
 // #: Types
@@ -38,7 +39,10 @@ export const make = Effect.gen(function* () {
 			const dataImage = yield* collectionAnki.processFile({ file });
 			yield* storage.createDataImage({ dataImage });
 			yield* Effect.promise(() => goto('/result-2024'));
-		}).pipe(Effect.tapErrorCause(Effect.logError), Effect.orDie);
+		}).pipe(
+			Effect.tapErrorCause(Effect.logError),
+			Effect.catchAll(() => Effect.sync(() => toast.error('Something went wrong')))
+		);
 
 	// ##:
 
