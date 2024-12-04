@@ -22,6 +22,7 @@ export const DataImage = Schema.Struct({
 		})
 	)
 });
+
 export interface DataImage extends Schema.Schema.Type<typeof DataImage> {}
 export interface DataImageJSON extends Schema.Schema.Encoded<typeof DataImage> {}
 
@@ -31,6 +32,15 @@ export const DataImageFromBase64 = Schema.compose(
 	Schema.StringFromBase64,
 	Schema.parseJson(DataImage)
 );
+
+// #: Email
+
+export const Email = Schema.Trim.pipe(
+	Schema.pattern(/^[^@]+@[^.@]+(?:\.[^.@]+)+$/),
+	Schema.brand('Email')
+).annotations({ identifier: 'Email', message: () => 'Invalid email.' });
+
+export type Email = Schema.Schema.Type<typeof Email>;
 
 // #: Constants
 // 01 Dec 2023, 1am CEST
