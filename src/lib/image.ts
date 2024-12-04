@@ -402,7 +402,7 @@ const makeTemplateImage = ({ dataImage }: { dataImage: DataImage }) =>
 									props: {
 										style: {
 											display: 'flex',
-											gap: '12px'
+											gap: '8px'
 										},
 										children: [
 											{
@@ -411,7 +411,8 @@ const makeTemplateImage = ({ dataImage }: { dataImage: DataImage }) =>
 													style: {
 														display: 'flex',
 														color: 'white',
-														fontWeight: '700'
+														fontWeight: '700',
+														width: '12px'
 													},
 													children: [(ix + 1).toLocaleString('en-US')]
 												}
