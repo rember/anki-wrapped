@@ -1,6 +1,11 @@
 <script lang="ts">
 	import { runtime } from '$lib/runtime';
 	import { Array, Effect, pipe, Random } from 'effect';
+	import type { Snippet } from 'svelte';
+
+	// ##: Props
+
+	let { children, klass }: { children: Snippet<[]>; klass: string } = $props();
 
 	// ##:
 
@@ -18,12 +23,12 @@
 			150
 		),
 		Effect.all,
-		Effect.provideService(Random.Random, Random.make('anki-wrapped')),
+		Effect.provideService(Random.Random, Random.make('ankiwrapped')),
 		runtime.runSync
 	);
 </script>
 
-<div class="bg-starry-night relative size-full">
+<div class={`bg-starry-night ${klass}`}>
 	<div class="absolute inset-x-0 top-0 h-[70%]">
 		{#each stars as star}
 			<div
@@ -38,6 +43,8 @@
 			></div>
 		{/each}
 	</div>
+
+	{@render children()}
 </div>
 
 <style>

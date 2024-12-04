@@ -50,74 +50,66 @@
 			.trim();
 </script>
 
-<div class="flex h-[640px] w-[360px]">
-	<div class="relative size-full">
-		<div class="absolute inset-0 size-full">
-			<CompBackgroundStarryNight />
-		</div>
-
-		<div class="absolute inset-0 flex size-full p-[20px]">
-			<!-- #: Heatmap -->
-			<div class="flex w-1/3 justify-center pr-[5px] pt-[3px]">
-				<div class="flex w-[76px] flex-row flex-wrap gap-[3px]">
-					<!-- NOTE: Dec 1 2023 is a Friday -->
-					<div class="size-[7px] flex-none"></div>
-					<div class="size-[7px] flex-none"></div>
-					<div class="size-[7px] flex-none"></div>
-					<div class="size-[7px] flex-none"></div>
-					{#each arrayDateIso as dateIso}
-						<div
-							class="size-[7px] flex-none bg-white"
-							style="opacity: {dateIsoToOpacityHeatmap(dateIso)}"
-						></div>
-					{/each}
-				</div>
-			</div>
-
-			<!-- #: Stats -->
-			<div class="flex w-2/3 flex-col gap-[20px]">
-				<!-- Reviews -->
-				<div class="flex flex-col">
-					<div class="text-white">Reviews</div>
-					<div class="text-[32px] font-[700] leading-[40px] text-white">
-						{dataImage.countReviews.toLocaleString('en-US')}
-					</div>
-				</div>
-
-				<!-- Minutes Reviewed -->
-				<div class="flex flex-col">
-					<div class="text-white">Minutes Reviewed</div>
-					<div class="text-[32px] font-[700] leading-[40px] text-white">
-						{dataImage.minutesSpentReviewing.toLocaleString('en-US')}
-					</div>
-				</div>
-
-				<!-- Cards Created -->
-				<div class="flex flex-col">
-					<div class="text-white">Cards Created</div>
-					<div class="text-[32px] font-[700] leading-[40px] text-white">
-						{dataImage.countCardsCreated.toLocaleString('en-US')}
-					</div>
-				</div>
-
-				<!-- Top Decks -->
-				<div class="flex flex-1 flex-col">
-					<div class="pb-[4px] text-white">Top Decks</div>
-					{#each dataImage.top5DecksByCountReviews as { name }, ix}
-						<div class="flex gap-[12px]">
-							<div class="font-[700] text-white">
-								{(ix + 1).toLocaleString('en-US')}
-							</div>
-							<div class="truncate font-[700] text-white">
-								{stripEmojis(name)}
-							</div>
-						</div>
-					{/each}
-				</div>
-
-				<!-- URL -->
-				<div class="font-[500] text-white">ANKIWRAPPED.COM</div>
-			</div>
+<CompBackgroundStarryNight klass="p-[20px] flex h-[640px] w-[360px]">
+	<!-- #: Heatmap -->
+	<div class="flex w-1/3 justify-center pr-[5px] pt-[3px]">
+		<div class="flex w-[76px] flex-row flex-wrap gap-[3px]">
+			<!-- NOTE: Dec 1 2023 is a Friday -->
+			<div class="size-[7px] flex-none"></div>
+			<div class="size-[7px] flex-none"></div>
+			<div class="size-[7px] flex-none"></div>
+			<div class="size-[7px] flex-none"></div>
+			{#each arrayDateIso as dateIso}
+				<div
+					class="size-[7px] flex-none bg-white"
+					style="opacity: {dateIsoToOpacityHeatmap(dateIso)}"
+				></div>
+			{/each}
 		</div>
 	</div>
-</div>
+
+	<!-- #: Stats -->
+	<div class="flex w-2/3 flex-col gap-[20px]">
+		<!-- Reviews -->
+		<div class="flex flex-col">
+			<div class="text-white">Reviews</div>
+			<div class="text-[32px] font-[700] leading-[40px] text-white">
+				{dataImage.countReviews.toLocaleString('en-US')}
+			</div>
+		</div>
+
+		<!-- Minutes Reviewed -->
+		<div class="flex flex-col">
+			<div class="text-white">Minutes Reviewed</div>
+			<div class="text-[32px] font-[700] leading-[40px] text-white">
+				{dataImage.minutesSpentReviewing.toLocaleString('en-US')}
+			</div>
+		</div>
+
+		<!-- Cards Created -->
+		<div class="flex flex-col">
+			<div class="text-white">Cards Created</div>
+			<div class="text-[32px] font-[700] leading-[40px] text-white">
+				{dataImage.countCardsCreated.toLocaleString('en-US')}
+			</div>
+		</div>
+
+		<!-- Top Decks -->
+		<div class="flex flex-1 flex-col">
+			<div class="pb-[4px] text-white">Top Decks</div>
+			{#each dataImage.top5DecksByCountReviews as { name }, ix}
+				<div class="flex gap-[12px]">
+					<div class="font-[700] text-white">
+						{(ix + 1).toLocaleString('en-US')}
+					</div>
+					<div class="truncate font-[700] text-white">
+						{stripEmojis(name)}
+					</div>
+				</div>
+			{/each}
+		</div>
+
+		<!-- URL -->
+		<div class="font-[500] text-white">ANKIWRAPPED.COM</div>
+	</div>
+</CompBackgroundStarryNight>

@@ -113,7 +113,7 @@ const makeTemplateImage = ({ dataImage }: { dataImage: DataImage }) =>
 				150
 			),
 			Effect.all,
-			Effect.provideService(Random.Random, Random.make('anki-wrapped'))
+			Effect.provideService(Random.Random, Random.make('ankiwrapped'))
 		);
 
 		const templateBackgroundStarryNight = {
