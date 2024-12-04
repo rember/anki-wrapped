@@ -13,6 +13,9 @@ export default defineConfig({
 		// `./.svelte-kit/output/server/stats.html`.
 		// visualizer({ emitFile: true, filename: 'stats.html' })
 	],
+	worker: {
+		format: 'es' // Use ES modules for workers
+	},
 
 	optimizeDeps: {
 		exclude: ['@effect/sql-sqlite-wasm']

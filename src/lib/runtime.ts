@@ -1,26 +1,17 @@
 import { goto } from '$app/navigation';
 import * as Kit from '@sveltejs/kit';
 import { Cause, Effect, Exit, identity, Layer, Logger, ManagedRuntime, pipe, Tracer } from 'effect';
-import * as CollectionAnki from './collection-anki';
-import * as Image from './image';
 import * as PostHog from './posthog';
 import * as Storage from './storage';
 import * as SvelteKit from './svelte-kit';
 
 // #: Runtime
 
-export type Services =
-	| Image.Image
-	| CollectionAnki.CollectionAnki
-	| Storage.Storage
-	| PostHog.PostHog;
+export type Services = Storage.Storage | PostHog.PostHog;
 
-export const layer = Layer.mergeAll(
-	Image.Image.Default,
-	CollectionAnki.CollectionAnki.Default,
-	Storage.Storage.Default,
-	PostHog.PostHog.Default
-).pipe(Layer.provide(Logger.pretty));
+export const layer = Layer.mergeAll(Storage.Storage.Default, PostHog.PostHog.Default).pipe(
+	Layer.provide(Logger.pretty)
+);
 
 export const runtime: ManagedRuntime.ManagedRuntime<Services, never> = ManagedRuntime.make(
 	pipe(layer, Layer.tapErrorCause(Effect.logError), Layer.orDie)

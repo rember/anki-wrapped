@@ -1,5 +1,12 @@
 import { Schema } from 'effect';
 
+// #: Constants
+// 01 Dec 2023, 1am CEST
+export const TS_START = 1701388800000;
+
+// 01 Dec 2024, 1am CEST
+export const TS_END = 1733011200000;
+
 // #: DataImage
 
 export const DataImage = Schema.Struct({
@@ -42,9 +49,42 @@ export const Email = Schema.Trim.pipe(
 
 export type Email = Schema.Schema.Type<typeof Email>;
 
-// #: Constants
-// 01 Dec 2023, 1am CEST
-export const TS_START = 1701388800000;
+// #: TaskWorkerGenerateSvg
 
-// 01 Dec 2024, 1am CEST
-export const TS_END = 1733011200000;
+export class TaskWorkerGenerateSvg extends Schema.TaggedRequest<TaskWorkerGenerateSvg>()(
+	'TaskWorkerGenerateSvg',
+	{
+		failure: Schema.Never,
+		success: Schema.Struct({ svg: Schema.String }),
+		payload: {
+			dataImage: DataImage
+		}
+	}
+) {}
+
+// #: TaskWorkerRenderPng
+
+export class TaskWorkerRenderPng extends Schema.TaggedRequest<TaskWorkerRenderPng>()(
+	'TaskWorkerRenderPng',
+	{
+		failure: Schema.Never,
+		success: Schema.Struct({ bytesPng: Schema.Uint8Array }),
+		payload: {
+			dataImage: DataImage,
+			svg: Schema.String
+		}
+	}
+) {}
+
+// #: TaskWorkerProcessCollectionAnki
+
+export class TaskWorkerProcessCollectionAnki extends Schema.TaggedRequest<TaskWorkerProcessCollectionAnki>()(
+	'TaskWorkerProcessCollectionAnki',
+	{
+		failure: Schema.Struct({ message: Schema.String }),
+		success: Schema.Struct({ dataImage: DataImage }),
+		payload: {
+			file: Schema.instanceOf(File)
+		}
+	}
+) {}

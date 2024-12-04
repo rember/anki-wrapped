@@ -89,7 +89,7 @@
 				>
 					{#if $stateCollectionAnki$._tag === 'Idle'}
 						<Dropzone
-							containerClasses="size-full text-white flex justify-center items-center font-semibold"
+							containerClasses="size-full text-white flex justify-center items-center font-semibold p-4"
 							disableDefaultStyles={true}
 							multiple={false}
 							on:drop={(e) => {
@@ -108,7 +108,7 @@
 					{/if}
 
 					{#if $stateCollectionAnki$._tag === 'Loading'}
-						<div class="flex size-full items-center justify-center font-semibold text-white">
+						<div class="flex size-full items-center justify-center p-4 font-semibold text-white">
 							Loading...
 						</div>
 					{/if}

@@ -1,9 +1,12 @@
+import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
-import * as CollectionAnki from '$lib/collection-anki';
 import * as Storage from '$lib/storage';
+import { Worker as WorkerEffect } from '@effect/platform';
+import { BrowserWorker } from '@effect/platform-browser';
 import { Effect, identity } from 'effect';
 import { toast } from 'svelte-french-toast';
 import { writable, type Readable } from 'svelte/store';
+import { TaskWorkerProcessCollectionAnki } from './values';
 
 // #: Types
 
@@ -24,7 +27,6 @@ export interface Bindings {
 // #: make
 
 export const make = Effect.gen(function* () {
-	const collectionAnki = yield* CollectionAnki.CollectionAnki;
 	const storage = yield* Storage.Storage;
 
 	// ##: State
@@ -35,13 +37,25 @@ export const make = Effect.gen(function* () {
 
 	const onFileSelected = ({ file }: { file: File }) =>
 		Effect.gen(function* () {
-			stateCollectionAnki$.set({ _tag: 'Loading', file });
-			const dataImage = yield* collectionAnki.processFile({ file });
-			yield* storage.createDataImage({ dataImage });
-			yield* Effect.promise(() => goto('/result-2024'));
+			if (browser) {
+				stateCollectionAnki$.set({ _tag: 'Loading', file });
+				const pool = yield* WorkerEffect.makePoolSerialized({ size: 1 });
+
+				const { dataImage } = yield* pool.executeEffect(
+					new TaskWorkerProcessCollectionAnki({ file })
+				);
+				yield* storage.createDataImage({ dataImage });
+				yield* Effect.promise(() => goto('/result-2024'));
+			}
 		}).pipe(
 			Effect.tapErrorCause(Effect.logError),
-			Effect.catchAll(() => Effect.sync(() => toast.error('Something went wrong')))
+			Effect.catchAll(() => Effect.sync(() => toast.error('Something went wrong'))),
+			Effect.scoped,
+			Effect.provide(
+				BrowserWorker.layer(
+					() => new Worker(new URL('./worker/worker.ts', import.meta.url), { type: 'module' })
+				)
+			)
 		);
 
 	// ##:

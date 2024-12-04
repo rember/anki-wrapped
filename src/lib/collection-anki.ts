@@ -1,4 +1,3 @@
-import { browser } from '$app/environment';
 import { Array, Data, Effect, Option, pipe, Record, Schema, String } from 'effect';
 import * as fzstd from 'fzstd';
 import { DataImage, TS_END, TS_START } from './values';
@@ -7,14 +6,6 @@ import { DataImage, TS_END, TS_START } from './values';
 
 export class CollectionAnki extends Effect.Service<CollectionAnki>()('CollectionAnki', {
 	effect: Effect.gen(function* () {
-		// ##: Return empty service in SSR
-
-		if (!browser) {
-			return {
-				processFile: () => Effect.dieMessage('Not supported in SSR')
-			};
-		}
-
 		// ##: Import large libs dynamically to improve code splitting
 
 		const { JSZip, SqliteClient } = yield* Effect.all(

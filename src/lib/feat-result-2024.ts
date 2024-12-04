@@ -1,9 +1,10 @@
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
-import * as Image from '$lib/image';
 import * as Storage from '$lib/storage';
 import { isUserAgentMobile } from '$lib/utils';
-import { Email, type DataImage } from '$lib/values';
+import { Email, TaskWorkerGenerateSvg, TaskWorkerRenderPng, type DataImage } from '$lib/values';
+import { Worker as WorkerEffect } from '@effect/platform';
+import { BrowserWorker } from '@effect/platform-browser';
 import { Data, Effect, identity, Option, pipe, Schema } from 'effect';
 import toast from 'svelte-french-toast';
 import { get, writable, type Readable } from 'svelte/store';
@@ -64,7 +65,6 @@ export interface Bindings {
 // #: make
 
 export const make = Effect.gen(function* () {
-	const image = yield* Image.Image;
 	const storage = yield* Storage.Storage;
 
 	// ##: State
@@ -190,17 +190,26 @@ export const make = Effect.gen(function* () {
 
 			yield* pipe(
 				Effect.gen(function* () {
+					const pool = yield* WorkerEffect.makePoolSerialized({ size: 1 });
+
 					// Generate SVG
-					const svg = yield* image.generateSvg({ dataImage });
+					const { svg } = yield* pool.executeEffect(new TaskWorkerGenerateSvg({ dataImage }));
 					yield* Effect.sync(() => stateImage$.set({ _tag: 'RenderingPng', dataImage, svg }));
 
 					// Render PNG
-					const bytesPng = yield* image.renderPng({ dataImage, svg });
+					const { bytesPng } = yield* pool.executeEffect(
+						new TaskWorkerRenderPng({ dataImage, svg })
+					);
 					const blobPng = new Blob([bytesPng], { type: 'image/png' });
 					stateImage$.set({ _tag: 'Ready', dataImage, svg, blobPng });
 				}),
 				Effect.tapErrorCause(Effect.logError),
 				Effect.catchAll(() => Effect.sync(() => toast.error('Something went wrong'))),
+				Effect.provide(
+					BrowserWorker.layer(
+						() => new Worker(new URL('./worker/worker.ts', import.meta.url), { type: 'module' })
+					)
+				),
 				Effect.forkScoped
 			);
 		}
