@@ -111,7 +111,7 @@ export class CollectionAnki extends Effect.Service<CollectionAnki>()('Collection
 				const minutesSpentReviewing = yield* pipe(
 					sql`
 						SELECT
-							SUM(time) / 60000.0 AS minutes_spent_reviewing
+							COALESCE(SUM(COALESCE(time, 0)), 0) / 60000.0 AS minutes_spent_reviewing
 						FROM
 							revlog
 						WHERE
