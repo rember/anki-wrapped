@@ -84,9 +84,13 @@
 				<div class="w-[318px] font-semibold text-gray-300 lg:w-full">
 					Drag the exported <span class="text-white">.colpkg</span> file here, or click to select a file
 				</div>
-				<div class="h-[168px] w-[318px] overflow-hidden rounded-xl bg-gray-50 lg:w-full">
+				<div
+					class="h-[168px] w-[318px] overflow-hidden rounded-xl border-4 border-dashed border-white border-opacity-30 bg-white bg-opacity-60 lg:w-full"
+				>
 					{#if $stateCollectionAnki$._tag === 'Idle'}
 						<Dropzone
+							containerClasses="size-full text-white flex justify-center items-center font-semibold"
+							disableDefaultStyles={true}
 							multiple={false}
 							on:drop={(e) => {
 								if (e.detail.acceptedFiles.length === 0) {
@@ -104,7 +108,9 @@
 					{/if}
 
 					{#if $stateCollectionAnki$._tag === 'Loading'}
-						Loading...
+						<div class="flex size-full items-center justify-center font-semibold text-white">
+							Loading...
+						</div>
 					{/if}
 				</div>
 			</div>
