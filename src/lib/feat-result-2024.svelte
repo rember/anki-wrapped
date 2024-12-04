@@ -86,6 +86,18 @@
 						value={$stateMarketingEmail$.email}
 						oninput={(e) =>
 							void onInputEmail({ value: e.currentTarget.value }).pipe(runtime.runFork)}
+						onkeydown={(e) => {
+							if (
+								$stateMarketingEmail$._tag === 'Ready' &&
+								e.key === 'Enter' &&
+								!e.shiftKey &&
+								!e.altKey &&
+								!e.ctrlKey &&
+								!e.metaKey
+							) {
+								createMarketingEmail.pipe(runtime.runFork);
+							}
+						}}
 					/>
 
 					<button
