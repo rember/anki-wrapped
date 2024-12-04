@@ -18,7 +18,7 @@
 >
 	<!-- #: SVG -->
 
-	<div class="h-[640px] w-[360px]">
+	<div class="h-[648px] w-[360px] pt-[8px]">
 		{#if $stateImage$._tag === 'GeneratingSvg'}
 			<div
 				class="flex size-full animate-pulse items-center justify-center bg-[#000c3a] font-semibold text-white opacity-40"
@@ -26,11 +26,13 @@
 				Generating image...
 			</div>
 		{:else}
+			<!-- Uncomment to render the image as a Svelte component instead of SVG -->
+			<!-- <CompImage dataImage={$stateImage$.dataImage} /> -->
 			{@html $stateImage$.svg}
 		{/if}
 	</div>
 
-	<div class="flex h-[650px] w-[360px] flex-col gap-8 pt-[2px]">
+	<div class="flex h-[648px] w-[360px] flex-col gap-8">
 		<!-- #: Header -->
 
 		<div class="text-3xl font-bold text-[#000c3a]">Here is your 2024 Anki Wrapped</div>

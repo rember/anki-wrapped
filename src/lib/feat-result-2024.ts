@@ -14,10 +14,27 @@ const NAME_FILE_IMAGE = 'Anki Wrapped 2024.png';
 // #: Types
 
 export type StateImage =
-	| { readonly _tag: 'GeneratingSvg' }
-	| { readonly _tag: 'RenderingPng'; svg: string }
-	| { readonly _tag: 'Ready'; svg: string; readonly blobPng: Blob }
-	| { readonly _tag: 'Downloaded'; svg: string; readonly blobPng: Blob };
+	| {
+			readonly _tag: 'GeneratingSvg';
+			readonly optionDataImage: Option.Option<DataImage>;
+	  }
+	| {
+			readonly _tag: 'RenderingPng';
+			readonly dataImage: DataImage;
+			readonly svg: string;
+	  }
+	| {
+			readonly _tag: 'Ready';
+			readonly dataImage: DataImage;
+			readonly svg: string;
+			readonly blobPng: Blob;
+	  }
+	| {
+			readonly _tag: 'Downloaded';
+			readonly dataImage: DataImage;
+			readonly svg: string;
+			readonly blobPng: Blob;
+	  };
 
 export type StateMarketingEmail =
 	| { readonly _tag: 'Ready'; readonly email: string }
@@ -51,7 +68,9 @@ export const make = Effect.gen(function* () {
 
 	// ##: State
 
-	const stateImage$ = writable<StateImage>({ _tag: 'GeneratingSvg' });
+	const optionDataImage = yield* storage.getDataImage;
+
+	const stateImage$ = writable<StateImage>({ _tag: 'GeneratingSvg', optionDataImage });
 	const stateMarketingEmail$ = writable<StateMarketingEmail>({ _tag: 'Ready', email: '' });
 
 	// ##: Commands
@@ -96,7 +115,12 @@ export const make = Effect.gen(function* () {
 
 		// Success
 		yield* Effect.sync(() =>
-			stateImage$.set({ _tag: 'Downloaded', svg: stateImage.svg, blobPng: stateImage.blobPng })
+			stateImage$.set({
+				_tag: 'Downloaded',
+				dataImage: stateImage.dataImage,
+				svg: stateImage.svg,
+				blobPng: stateImage.blobPng
+			})
 		);
 	}).pipe(Effect.tapErrorCause(Effect.logError), Effect.orDie);
 
@@ -144,7 +168,6 @@ export const make = Effect.gen(function* () {
 	// the user to press the "Download" button.
 
 	if (browser) {
-		const optionDataImage = yield* storage.getDataImage;
 		if (Option.isNone(optionDataImage)) {
 			yield* Effect.logError('Image data is missing');
 			yield* Effect.promise(() => goto('/'));
@@ -155,12 +178,12 @@ export const make = Effect.gen(function* () {
 				Effect.gen(function* () {
 					// Generate SVG
 					const svg = yield* image.generateSvg({ dataImage });
-					yield* Effect.sync(() => stateImage$.set({ _tag: 'RenderingPng', svg }));
+					yield* Effect.sync(() => stateImage$.set({ _tag: 'RenderingPng', dataImage, svg }));
 
 					// Render PNG
 					const bytesPng = yield* image.renderPng({ dataImage, svg });
 					const blobPng = new Blob([bytesPng], { type: 'image/png' });
-					stateImage$.set({ _tag: 'Ready', svg, blobPng });
+					stateImage$.set({ _tag: 'Ready', dataImage, svg, blobPng });
 				}),
 				Effect.tapErrorCause(Effect.logError),
 				Effect.forkScoped
