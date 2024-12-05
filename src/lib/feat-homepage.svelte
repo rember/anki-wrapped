@@ -125,10 +125,19 @@
 		class="flex flex-col flex-wrap items-center justify-between gap-3 self-center px-4 py-3 text-sm text-white lg:px-6"
 	>
 		<a
+			href="https://github.com/rember/anki-wrapped"
+			target="_blank"
+			rel="noopener noreferrer"
+			class="flex h-10 items-center gap-2 rounded-full border border-gray-200 border-opacity-30 bg-gray-200 bg-opacity-60 px-4 py-2 outline-none hover:bg-opacity-70 focus:bg-opacity-70"
+		>
+			<div class="icon-[lucide--github] size-5 flex-none"></div>
+			<div class="font-semibold">Source code</div>
+		</a>
+		<a
 			href="https://rember.com"
 			target="_blank"
 			rel="noopener noreferrer"
-			class="flex items-center gap-2 rounded-full border border-gray-200 border-opacity-30 bg-gray-200 bg-opacity-60 px-4 py-2 outline-none hover:bg-opacity-70 focus:bg-opacity-70"
+			class="flex h-10 items-center gap-2 rounded-full border border-gray-200 border-opacity-30 bg-gray-200 bg-opacity-60 px-4 py-2 outline-none hover:bg-opacity-70 focus:bg-opacity-70"
 		>
 			<div class="font-semibold">Built by the team behind</div>
 			<enhanced:img src="$lib/assets/rember-logo-text.png" class="mb-[0.39rem] w-14" alt="Rember" />

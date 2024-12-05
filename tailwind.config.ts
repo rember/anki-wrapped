@@ -1,3 +1,4 @@
+import { addDynamicIconSelectors } from '@iconify/tailwind';
 import aspectRatio from '@tailwindcss/aspect-ratio';
 import containerQueries from '@tailwindcss/container-queries';
 import forms from '@tailwindcss/forms';
@@ -16,5 +17,5 @@ export default {
 		}
 	},
 
-	plugins: [typography, forms, containerQueries, aspectRatio]
+	plugins: [typography, forms, containerQueries, aspectRatio, addDynamicIconSelectors()]
 } satisfies Config;
