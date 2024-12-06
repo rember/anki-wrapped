@@ -1,5 +1,5 @@
 import { Effect, Layer, pipe } from 'effect';
-import type * as PostHogJS from 'posthog-js';
+import * as PostHogJS from 'posthog-js';
 
 // #: Types
 
@@ -13,8 +13,6 @@ interface ArgsCapture extends PostHogJS.CaptureOptions {
 export class PostHog extends Effect.Service<PostHog>()('PostHog', {
 	scoped: Effect.gen(function* () {
 		// ##: client
-
-		const PostHogJS = yield* Effect.promise(() => import('posthog-js'));
 
 		yield* Effect.sync(() =>
 			PostHogJS.posthog.init('phc_GiJq1yxbxhiXxPFvDgZ2pBNv0Pg2xm5ivqkO0tPefQI', {
