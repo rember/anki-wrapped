@@ -1,39 +1,39 @@
-import {
-	TaskWorkerGenerateSvg,
-	TaskWorkerProcessCollectionAnki,
-	TaskWorkerRenderPng
-} from '$lib/values';
 import { WorkerRunner } from '@effect/platform';
 import { BrowserWorkerRunner } from '@effect/platform-browser';
 import { Effect, Layer, Logger, Schema } from 'effect';
-import * as CollectionAnki from '../collection-anki';
-import * as Image from '../image';
+import {
+	TaskGenerateSvg,
+	TaskProcessCollectionAnki,
+	TaskRenderPng
+} from '../1-shared/worker-tasks';
+import * as CollectionAnki from '../2-services/collection-anki';
+import * as Image from '../2-services/image';
 
 // #:
 
-const layerWorker = WorkerRunner.layerSerialized(
-	Schema.Union(TaskWorkerGenerateSvg, TaskWorkerRenderPng, TaskWorkerProcessCollectionAnki),
+const layerWorkerRunner = WorkerRunner.layerSerialized(
+	Schema.Union(TaskGenerateSvg, TaskRenderPng, TaskProcessCollectionAnki),
 	{
-		TaskWorkerGenerateSvg: (req) =>
+		TaskGenerateSvg: (req) =>
 			Effect.gen(function* () {
 				const image = yield* Image.Image;
 				const svg = yield* image.generateSvg({ dataImage: req.dataImage });
 				return { svg };
 			}).pipe(Effect.tapErrorCause(Effect.logError)),
-		TaskWorkerRenderPng: (req) =>
+		TaskRenderPng: (req) =>
 			Effect.gen(function* () {
 				const image = yield* Image.Image;
 				const bytesPng = yield* image.renderPng({ dataImage: req.dataImage, svg: req.svg });
 				return { bytesPng };
 			}).pipe(Effect.tapErrorCause(Effect.logError)),
-		TaskWorkerProcessCollectionAnki: (req) =>
+		TaskProcessCollectionAnki: (req) =>
 			Effect.gen(function* () {
 				const collectionAnki = yield* CollectionAnki.CollectionAnki;
 				const dataImage = yield* collectionAnki.processFile({ file: req.file });
 				return { dataImage };
 			}).pipe(
 				Effect.tapErrorCause(Effect.logError),
-				Effect.catchAll((_) => Effect.fail({ message: 'Error exporting files' }))
+				Effect.catchAll((_) => Effect.fail({ message: 'Error processing Anki collection' }))
 			)
 	}
 ).pipe(
@@ -45,4 +45,4 @@ const layerWorker = WorkerRunner.layerSerialized(
 
 // #: Run
 
-Effect.runFork(Layer.launch(layerWorker));
+Effect.runFork(Layer.launch(layerWorkerRunner));

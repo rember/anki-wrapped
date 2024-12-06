@@ -1,23 +1,18 @@
 import { initWasm as initWasmResvg, Resvg } from '@resvg/resvg-wasm';
+import URL_WASM_RESVG from '@resvg/resvg-wasm/index_bg.wasm?url';
 import { Array, Effect, Option, pipe, Random, Record } from 'effect';
 import type { SatoriOptions } from 'satori';
-import { TS_END, TS_START, type DataImage } from './values';
+import satori from 'satori';
+import { TS_END_2024, TS_START_2024 } from '../1-shared/constants';
+import type { DataImage } from '../1-shared/values';
 
 // #:
 
 export class Image extends Effect.Service<Image>()('Image', {
 	effect: Effect.gen(function* () {
-		// ##: Import large libs dynamically to improve code splitting
-		// TODO: Load Resvg correctly instead of from a CDN.
-
-		const satori = yield* pipe(
-			Effect.promise(() => import('satori')),
-			Effect.map((_) => _.default)
-		);
-
 		// ##: Init WASM libraries
 
-		yield* Effect.promise(() => initWasmResvg('https://unpkg.com/@resvg/resvg-wasm/index_bg.wasm'));
+		yield* Effect.promise(() => initWasmResvg(URL_WASM_RESVG));
 
 		// ##: Load fonts
 
@@ -153,8 +148,8 @@ const makeTemplateImage = ({ dataImage }: { dataImage: DataImage }) =>
 
 		// ##: Heatmap
 
-		const dateStart = new Date(TS_START);
-		const dateEnd = new Date(TS_END);
+		const dateStart = new Date(TS_START_2024);
+		const dateEnd = new Date(TS_END_2024);
 
 		const arrayDateIso: string[] = [];
 		const dateCurrent = new Date(dateStart);

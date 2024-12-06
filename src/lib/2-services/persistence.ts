@@ -1,29 +1,21 @@
-import { browser } from '$app/environment';
 import { KeyValueStore } from '@effect/platform';
 import { BrowserKeyValueStore } from '@effect/platform-browser';
-import { Effect, Option, Schema } from 'effect';
-import { DataImage, DataImageFromBase64 } from './values';
+import { Effect, Layer, Option, Schema } from 'effect';
+import { DataImage, DataImageFromBase64 } from '../1-shared/values';
 
-// ##:
+// #:
 
-export class Storage extends Effect.Service<Storage>()('Storage', {
+const KEY = 'ankiwrapped-result-2024';
+
+// #:
+
+export class Persistence extends Effect.Service<Persistence>()('Persistence', {
 	effect: Effect.gen(function* () {
-		// ##: Return empty service in SSR
-
-		if (!browser) {
-			return {
-				createDataImage: () => Effect.dieMessage('Not supported in SSR'),
-				getDataImage: Effect.dieMessage('Not supported in SSR')
-			};
-		}
-
-		// ##:
-
 		const store = yield* KeyValueStore.KeyValueStore;
 
-		// ##: createDataImage
+		// ##: setDataImage
 
-		const createDataImage = ({ dataImage }: { dataImage: DataImage }) =>
+		const setDataImage = ({ dataImage }: { dataImage: DataImage }) =>
 			Effect.gen(function* () {
 				const valueEnc = yield* Schema.encode(DataImageFromBase64)(dataImage);
 				yield* store.set(KEY, valueEnc);
@@ -44,13 +36,17 @@ export class Storage extends Effect.Service<Storage>()('Storage', {
 		// ##:
 
 		return {
-			createDataImage,
+			setDataImage,
 			getDataImage
 		};
 	}),
-	dependencies: [browser ? BrowserKeyValueStore.layerLocalStorage : KeyValueStore.layerMemory]
+	dependencies: [BrowserKeyValueStore.layerLocalStorage]
 }) {}
 
-// ##:
+// #:
 
-const KEY = 'ankiwrapped-result-2024';
+export const layerEmpty = Layer.succeed(Persistence, {
+	_tag: 'Persistence',
+	setDataImage: () => Effect.dieMessage('Not implemented'),
+	getDataImage: Effect.dieMessage('Not implemented')
+});

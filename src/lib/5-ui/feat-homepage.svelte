@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { runtime } from '$lib/runtime';
 	import { Exit, Scope } from 'effect';
 	import { onDestroy } from 'svelte';
 	import Dropzone from 'svelte-file-dropzone';
+	import { runtime } from '../4-runtime/runtime';
 	import CompBackgroundStarryNight from './comp-background-starry-night.svelte';
 	import * as FeatHomepage from './feat-homepage';
 
@@ -48,7 +48,7 @@
 					<span class="text-white">Export...</span>
 				</div>
 				<enhanced:img
-					src="$lib/assets/step1.png"
+					src="$lib/0-assets/step1.png"
 					class="h-[168px] w-[318px] rounded-xl"
 					alt="Click on Export in Anki"
 				/>
@@ -68,7 +68,7 @@
 					<span class="text-white">Export...</span>
 				</div>
 				<enhanced:img
-					src="$lib/assets/step2.png"
+					src="$lib/0-assets/step2.png"
 					class="h-[168px] w-[318px] rounded-xl"
 					alt="Export the .colpkg file"
 				/>
@@ -140,7 +140,11 @@
 			class="flex h-10 items-center gap-2 rounded-full border border-gray-200 border-opacity-30 bg-gray-200 bg-opacity-60 px-4 py-2 outline-none hover:bg-opacity-70 focus:bg-opacity-70"
 		>
 			<div class="font-semibold">Built by the team behind</div>
-			<enhanced:img src="$lib/assets/rember-logo-text.png" class="mb-[0.39rem] w-14" alt="Rember" />
+			<enhanced:img
+				src="$lib/0-assets/rember-logo-text.png"
+				class="mb-[0.39rem] w-14"
+				alt="Rember"
+			/>
 		</a>
 		<div class="opacity-60">This tool is not affiliated with or endorsed by Anki.</div>
 	</div>

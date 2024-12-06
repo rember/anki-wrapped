@@ -1,5 +1,5 @@
 <script lang="ts">
-	import FeatHomepage from '$lib/feat-homepage.svelte';
+	import FeatHomepage from '$lib/5-ui/feat-homepage.svelte';
 </script>
 
 <svelte:head>

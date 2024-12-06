@@ -1,5 +1,5 @@
 <script lang="ts">
-	import FeatResult_2024 from '$lib/feat-result-2024.svelte';
+	import FeatResult_2024 from '$lib/5-ui/feat-result-2024.svelte';
 </script>
 
 <svelte:head>

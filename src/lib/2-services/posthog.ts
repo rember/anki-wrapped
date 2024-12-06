@@ -1,5 +1,4 @@
-import { browser } from '$app/environment';
-import { Effect, pipe } from 'effect';
+import { Effect, Layer, pipe } from 'effect';
 import type * as PostHogJS from 'posthog-js';
 
 // #: Types
@@ -13,28 +12,6 @@ interface ArgsCapture extends PostHogJS.CaptureOptions {
 
 export class PostHog extends Effect.Service<PostHog>()('PostHog', {
 	scoped: Effect.gen(function* () {
-		// ##: Return empty service in SSR
-		// WARN: Cannot import from "posthog-js" in NodeJS
-
-		if (!browser) {
-			return {
-				capture: () => Effect.dieMessage('Not supported in SSR')
-			};
-		}
-
-		// ##: Return a mock service in development
-
-		if (import.meta.env.MODE === 'development') {
-			return {
-				capture: (args: ArgsCapture) =>
-					pipe(
-						Effect.log(`Capture ${args.event}`),
-						Effect.annotateLogs(args.properties ?? {}),
-						Effect.withLogSpan('PostHog')
-					)
-			};
-		}
-
 		// ##: client
 
 		const PostHogJS = yield* Effect.promise(() => import('posthog-js'));
@@ -53,7 +30,9 @@ export class PostHog extends Effect.Service<PostHog>()('PostHog', {
 		// ##: capture
 
 		const capture = (args: ArgsCapture) =>
-			Effect.sync(() => PostHogJS.posthog.capture(args.event, args.properties, args));
+			Effect.sync(() => {
+				PostHogJS.posthog.capture(args.event, args.properties, args);
+			});
 
 		// ##:
 
@@ -62,3 +41,20 @@ export class PostHog extends Effect.Service<PostHog>()('PostHog', {
 		};
 	})
 }) {}
+
+// #:
+
+export const layerEmpty = Layer.succeed(PostHog, {
+	_tag: 'PostHog',
+	capture: () => Effect.dieMessage('Not implemented')
+});
+
+export const layerLog = Layer.succeed(PostHog, {
+	_tag: 'PostHog',
+	capture: (args: ArgsCapture) =>
+		pipe(
+			Effect.log(`Capture ${args.event}`),
+			Effect.annotateLogs(args.properties ?? {}),
+			Effect.withLogSpan('PostHog')
+		)
+});

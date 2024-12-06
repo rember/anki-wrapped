@@ -1,12 +1,9 @@
-import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
-import * as Storage from '$lib/storage';
-import { Worker as WorkerEffect } from '@effect/platform';
-import { BrowserWorker } from '@effect/platform-browser';
 import { Effect, identity } from 'effect';
 import { toast } from 'svelte-french-toast';
 import { writable, type Readable } from 'svelte/store';
-import { TaskWorkerProcessCollectionAnki } from './values';
+import * as Persistence from '../2-services/persistence';
+import * as WorkerTasks from '../4-runtime/worker-tasks';
 
 // #: Types
 
@@ -27,7 +24,8 @@ export interface Bindings {
 // #: make
 
 export const make = Effect.gen(function* () {
-	const storage = yield* Storage.Storage;
+	const persistence = yield* Persistence.Persistence;
+	const workerTasks = yield* WorkerTasks.WorkerTasks;
 
 	// ##: State
 
@@ -37,24 +35,18 @@ export const make = Effect.gen(function* () {
 
 	const onFileSelected = ({ file }: { file: File }) =>
 		Effect.gen(function* () {
-			if (browser) {
-				stateCollectionAnki$.set({ _tag: 'Loading', file });
-				const pool = yield* WorkerEffect.makePoolSerialized({ size: 1 });
+			stateCollectionAnki$.set({ _tag: 'Loading', file });
 
-				const { dataImage } = yield* pool.executeEffect(
-					new TaskWorkerProcessCollectionAnki({ file })
-				);
-				yield* storage.createDataImage({ dataImage });
-				yield* Effect.promise(() => goto('/result-2024'));
-			}
+			const { dataImage } = yield* workerTasks.processCollectionAnki({ file });
+			yield* persistence.setDataImage({ dataImage });
+
+			yield* Effect.promise(() => goto('/result-2024'));
 		}).pipe(
 			Effect.tapErrorCause(Effect.logError),
-			Effect.catchAll(() => Effect.sync(() => toast.error('Something went wrong'))),
-			Effect.scoped,
-			Effect.provide(
-				BrowserWorker.layer(
-					() => new Worker(new URL('./worker/worker.ts', import.meta.url), { type: 'module' })
-				)
+			Effect.catchAll(() =>
+				Effect.sync(() => {
+					toast.error('Something went wrong');
+				})
 			)
 		);
 

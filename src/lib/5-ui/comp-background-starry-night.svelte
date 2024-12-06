@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { runtime } from '$lib/runtime';
 	import { Array, Effect, pipe, Random } from 'effect';
 	import type { Snippet } from 'svelte';
+	import { runtime } from '../4-runtime/runtime';
 
 	// ##: Props
 

@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { runtime } from '$lib/runtime';
 	import { Exit, Scope } from 'effect';
 	import { onDestroy } from 'svelte';
+	import { runtime } from '../4-runtime/runtime';
 	import * as FeatResult2024 from './feat-result-2024';
 
 	// ##: Bindings
@@ -63,7 +63,11 @@
 			class="flex items-center gap-2 outline-none"
 		>
 			<div class="font-semibold text-[#000c3a]">Built by the team behind</div>
-			<enhanced:img src="$lib/assets/rember-logo-text.png" class="mb-[0.39rem] w-14" alt="Rember" />
+			<enhanced:img
+				src="$lib/0-assets/rember-logo-text.png"
+				class="mb-[0.39rem] w-14"
+				alt="Rember"
+			/>
 		</a>
 
 		<div class="flex-1"></div>

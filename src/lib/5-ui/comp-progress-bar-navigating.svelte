@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { Exit, Option, Scope } from 'effect';
 	import { onDestroy } from 'svelte';
+	import { runtime } from '../4-runtime/runtime';
 	import * as CompProgressBarNavigating from './comp-progress-bar-navigating';
-	import { runtime } from './runtime';
 
 	// ##: Bindings
 

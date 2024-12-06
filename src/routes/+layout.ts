@@ -1,6 +1,6 @@
 import { Effect } from 'effect';
 
-import { toLoad } from '$lib/runtime';
+import { toLoad } from '$lib/4-runtime/runtime';
 
 import type { LayoutLoad } from './$types.js';
 

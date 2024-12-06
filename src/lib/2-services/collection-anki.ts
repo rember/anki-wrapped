@@ -1,33 +1,20 @@
+import { SqliteClient } from '@effect/sql-sqlite-wasm';
 import { Array, Data, Effect, Option, pipe, Record, Schema, String } from 'effect';
 import * as fzstd from 'fzstd';
-import { DataImage, TS_END, TS_START } from './values';
+import JSZip from 'jszip';
+import { TS_END_2024, TS_START_2024 } from '../1-shared/constants';
+import { DataImage } from '../1-shared/values';
 
 // #:
 
 export class CollectionAnki extends Effect.Service<CollectionAnki>()('CollectionAnki', {
 	effect: Effect.gen(function* () {
-		// ##: Import large libs dynamically to improve code splitting
-
-		const { JSZip, SqliteClient } = yield* Effect.all(
-			{
-				JSZip: pipe(
-					Effect.promise(() => import('jszip')),
-					Effect.map((_) => _.default)
-				),
-				SqliteClient: pipe(
-					Effect.promise(() => import('@effect/sql-sqlite-wasm')),
-					Effect.map((_) => _.SqliteClient)
-				)
-			},
-			{ concurrency: 'unbounded' }
-		);
+		const sql = yield* SqliteClient.SqliteClient;
 
 		// ##: processFile
 
 		const processFile = ({ file }: { file: File }) =>
 			Effect.gen(function* () {
-				const sql = yield* SqliteClient.SqliteClient;
-
 				// Unzip the .colpkg file
 				const filesColpkg = yield* Effect.tryPromise({
 					try: () => JSZip.loadAsync(file),
@@ -45,7 +32,6 @@ export class CollectionAnki extends Effect.Service<CollectionAnki>()('Collection
 				});
 
 				// Decompress the collection.anki2b file
-				// TODO: Consider streaming
 				const bytesCollectionAnki = yield* Effect.try({
 					try: () => fzstd.decompress(bytesCollectionAnki21b),
 					catch: (error) => {
@@ -69,7 +55,7 @@ export class CollectionAnki extends Effect.Service<CollectionAnki>()('Collection
 						FROM
 							cards
 						WHERE
-							id BETWEEN ${TS_START} AND ${TS_END}
+							id BETWEEN ${TS_START_2024} AND ${TS_END_2024}
 					`,
 					Effect.flatMap(
 						Schema.decodeUnknown(Schema.Tuple(Schema.Struct({ cards_created: Schema.Number })))
@@ -89,7 +75,7 @@ export class CollectionAnki extends Effect.Service<CollectionAnki>()('Collection
 						FROM
 							revlog
 						WHERE
-							id BETWEEN ${TS_START} AND ${TS_END}
+							id BETWEEN ${TS_START_2024} AND ${TS_END_2024}
 							AND type != 4
 					`,
 					Effect.flatMap(
@@ -106,7 +92,7 @@ export class CollectionAnki extends Effect.Service<CollectionAnki>()('Collection
 						FROM
 							revlog
 						WHERE
-							revlog.id BETWEEN ${TS_START} AND ${TS_END}
+							revlog.id BETWEEN ${TS_START_2024} AND ${TS_END_2024}
 							AND revlog.type != 4
 					`,
 					Effect.flatMap(
@@ -128,7 +114,7 @@ export class CollectionAnki extends Effect.Service<CollectionAnki>()('Collection
 							JOIN cards c ON r.cid = c.id
 							JOIN decks d ON c.did = d.id
 						WHERE
-							r.id BETWEEN ${TS_START} AND ${TS_END}
+							r.id BETWEEN ${TS_START_2024} AND ${TS_END_2024}
 							AND r.type != 4
 						GROUP BY
 							d.id
@@ -156,7 +142,7 @@ export class CollectionAnki extends Effect.Service<CollectionAnki>()('Collection
 						FROM
 							revlog r
 						WHERE
-							r.id BETWEEN ${TS_START} AND ${TS_END}
+							r.id BETWEEN ${TS_START_2024} AND ${TS_END_2024}
 							AND r.type != 4
 						GROUP BY
 							date_iso
@@ -186,14 +172,15 @@ export class CollectionAnki extends Effect.Service<CollectionAnki>()('Collection
 				});
 
 				return dataImage;
-			}).pipe(Effect.provide(SqliteClient.layerMemory({})));
+			});
 
 		// ##:
 
 		return {
 			processFile
 		};
-	})
+	}),
+	dependencies: [SqliteClient.layerMemory({})]
 }) {}
 
 // #: Errors
