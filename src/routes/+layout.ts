@@ -15,4 +15,4 @@ export const prerender = true;
 export const load: LayoutLoad = Effect.gen(function* () {
 	yield* Effect.logDebug('Load layout');
 	return undefined;
-}).pipe(toLoad({ span: { name: '/' } }));
+}).pipe(toLoad({ span: { name: 'layout /' } }));
