@@ -6,6 +6,12 @@ import typography from '@tailwindcss/typography';
 import type { Config } from 'tailwindcss';
 import defaultTheme from 'tailwindcss/defaultTheme.js';
 
+// #:
+
+const pluginIconify = addDynamicIconSelectors();
+
+// #:
+
 export default {
 	content: ['./src/**/*.{html,js,svelte,ts}'],
 
@@ -17,5 +23,5 @@ export default {
 		}
 	},
 
-	plugins: [typography, forms, containerQueries, aspectRatio, addDynamicIconSelectors()]
+	plugins: [typography, forms, containerQueries, aspectRatio, pluginIconify]
 } satisfies Config;
