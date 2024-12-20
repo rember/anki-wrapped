@@ -10,6 +10,8 @@ Here's how it works:
 
 Everything happens locally in the browser.
 
+Built by the team behind [Rember](https://www.rember.com/).
+
 ## Development
 
 1. Clone the repository
