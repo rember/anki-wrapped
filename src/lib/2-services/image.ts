@@ -24,10 +24,10 @@ export class Image extends Effect.Service<Image>()('Image', {
 					inter700: 'https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-700-normal.ttf'
 				},
 				(url) =>
-					pipe(
-						Effect.promise(() => fetch(url)),
-						Effect.andThen((response) => response.arrayBuffer())
-					)
+					Effect.promise(async () => {
+						const responseFont = await fetch(url);
+						return await responseFont.arrayBuffer();
+					})
 			),
 			{ concurrency: 'unbounded' }
 		);

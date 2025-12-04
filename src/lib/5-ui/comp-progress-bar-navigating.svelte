@@ -15,7 +15,7 @@
 {#if Option.isSome($progress$)}
 	{@const progress = $progress$.value}
 	<div
-		class="fixed left-0 top-0 z-[999] h-1 bg-purple-300 transition-all duration-200 ease-out"
+		class="fixed top-0 left-0 z-[999] h-1 bg-purple-300 transition-all duration-200 ease-out"
 		style:width="{progress}%"
 	></div>
 {/if}

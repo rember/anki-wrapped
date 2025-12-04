@@ -1,5 +1,6 @@
 import { enhancedImages } from '@sveltejs/enhanced-img';
 import { sveltekit } from '@sveltejs/kit/vite';
+import tailwindcss from '@tailwindcss/vite';
 import topLevelAwait from 'vite-plugin-top-level-await';
 import { defineConfig } from 'vitest/config';
 
@@ -7,6 +8,7 @@ export default defineConfig({
 	plugins: [
 		topLevelAwait(),
 		enhancedImages(),
+		tailwindcss(),
 		sveltekit()
 		// Uncomment to generate bundle stats with `rollup-plugin-visualizer`. The
 		// stats are saved in `./.svelte-kit/output/client/stats.html` and
