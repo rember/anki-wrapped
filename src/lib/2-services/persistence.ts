@@ -5,7 +5,7 @@ import { DataImage, DataImageFromBase64 } from '../1-shared/values';
 
 // #:
 
-const KEY = 'ankiwrapped-result-2024';
+const KEY = 'ankiwrapped-result-2025';
 
 // #:
 

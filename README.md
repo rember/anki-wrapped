@@ -5,7 +5,7 @@ It's like Spotify Wrapped but for Anki.
 Here's how it works:
 
 - In Anki, you export your collection as `.colpkg`, and drop it on the site
-- The site extracts your stats for 2024 locally in your browser
+- The site extracts your stats for 2025 locally in your browser
 - You get a pretty image with your Anki stats, which you can download and share
 
 Everything happens locally in the browser.

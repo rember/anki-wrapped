@@ -11,7 +11,7 @@ import * as WorkerTasks from '../4-runtime/worker-tasks';
 
 // #:
 
-const NAME_FILE_IMAGE = 'Anki Wrapped 2024.png';
+const NAME_FILE_IMAGE = 'Anki Wrapped 2025.png';
 
 // #: Types
 
@@ -91,8 +91,8 @@ export const make = Effect.gen(function* () {
 				yield* Effect.tryPromise(() =>
 					navigator.share({
 						files: [file],
-						title: 'Anki Wrapped 2024',
-						text: "Here's my Anki Wrapped for 2024"
+						title: 'Anki Wrapped 2025',
+						text: "Here's my Anki Wrapped for 2025"
 					})
 				);
 
@@ -223,7 +223,7 @@ export const make = Effect.gen(function* () {
 // #:
 
 export class ErrorCannotCreateMarketingEmail extends Data.TaggedError(
-	'FeatResult2024/CannotCreateMarketingEmail'
+	'FeatResult2025/CannotCreateMarketingEmail'
 )<{ error?: unknown | undefined }> {
 	override get message() {
 		return 'Failed to create marketing email, response is not successful';

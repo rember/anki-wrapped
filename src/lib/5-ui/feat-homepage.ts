@@ -40,7 +40,7 @@ export const make = Effect.gen(function* () {
 			const { dataImage } = yield* workerTasks.processCollectionAnki({ file });
 			yield* persistence.setDataImage({ dataImage });
 
-			yield* Effect.promise(() => goto('/result-2024'));
+			yield* Effect.promise(() => goto('/result-2025'));
 		}).pipe(
 			Effect.tapErrorCause(Effect.logError),
 			Effect.catchAll(() =>

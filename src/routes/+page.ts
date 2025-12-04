@@ -17,10 +17,10 @@ export const prerender = true;
 export const load: PageLoad = Effect.gen(function* () {
 	yield* Effect.logDebug('Load page');
 
-	// Preload imports for /result-2024
+	// Preload imports for /result-2025
 	if (browser) {
 		yield* pipe(
-			Effect.promise(() => preloadCode('/result-2024')),
+			Effect.promise(() => preloadCode('/result-2025')),
 			Effect.forkDaemon
 		);
 	}

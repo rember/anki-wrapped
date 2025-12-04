@@ -3,7 +3,7 @@ import URL_WASM_RESVG from '@resvg/resvg-wasm/index_bg.wasm?url';
 import { Array, Effect, Option, pipe, Random, Record } from 'effect';
 import type { SatoriOptions } from 'satori';
 import satori from 'satori';
-import { TS_END_2024, TS_START_2024 } from '../1-shared/constants';
+import { TS_END_2025, TS_START_2025 } from '../1-shared/constants';
 import type { DataImage } from '../1-shared/values';
 
 // #:
@@ -148,8 +148,8 @@ const makeTemplateImage = ({ dataImage }: { dataImage: DataImage }) =>
 
 		// ##: Heatmap
 
-		const dateStart = new Date(TS_START_2024);
-		const dateEnd = new Date(TS_END_2024);
+		const dateStart = new Date(TS_START_2025);
+		const dateEnd = new Date(TS_END_2025);
 
 		const arrayDateIso: string[] = [];
 		const dateCurrent = new Date(dateStart);

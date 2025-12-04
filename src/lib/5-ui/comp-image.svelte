@@ -4,7 +4,7 @@
 -->
 <script lang="ts">
 	import { Array, Option, pipe, Record } from 'effect';
-	import { TS_END_2024, TS_START_2024 } from '../1-shared/constants';
+	import { TS_END_2025, TS_START_2025 } from '../1-shared/constants';
 	import type { DataImage } from '../1-shared/values';
 	import CompBackgroundStarryNight from './comp-background-starry-night.svelte';
 
@@ -14,8 +14,8 @@
 
 	// ##:
 
-	const dateStart = new Date(TS_START_2024);
-	const dateEnd = new Date(TS_END_2024);
+	const dateStart = new Date(TS_START_2025);
+	const dateEnd = new Date(TS_END_2025);
 
 	const arrayDateIso: string[] = [];
 	const dateCurrent = new Date(dateStart);

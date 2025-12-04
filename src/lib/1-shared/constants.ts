@@ -1,5 +1,5 @@
-// 01 Dec 2023, 1am CEST
-export const TS_START_2024 = 1701388800000;
+// 01 Dec 2024, 1am CET
+export const TS_START_2025 = 1733011200000;
 
-// 01 Dec 2024, 1am CEST
-export const TS_END_2024 = 1733011200000;
+// 01 Dec 2025, 1am CET
+export const TS_END_2025 = 1764547200000;

@@ -22,7 +22,7 @@
 
 	<div class="flex max-w-[36rem] flex-1 flex-col justify-center gap-8 px-4 pt-16">
 		<h1 class="text-center text-7xl font-black text-white">
-			<span class="font-bold">2024</span><br />Anki Wrapped
+			<span class="font-bold">2025</span><br />Anki Wrapped
 		</h1>
 		<p class="text-center text-2xl text-gray-300">
 			Your year in spaced repetition flashcards, like Spotify Wrapped but for your Anki collection.
