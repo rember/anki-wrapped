@@ -197,7 +197,7 @@ export const make = Effect.gen(function* () {
 
 					// Render PNG
 					const { bytesPng } = yield* workerTasks.renderPng({ dataImage, svg });
-					const blobPng = new Blob([bytesPng], { type: 'image/png' });
+					const blobPng = new Blob([bytesPng as BlobPart], { type: 'image/png' });
 					stateImage$.set({ _tag: 'Ready', dataImage, svg, blobPng });
 				}),
 				Effect.tapErrorCause(Effect.logError),

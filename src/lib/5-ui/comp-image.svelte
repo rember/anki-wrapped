@@ -53,7 +53,7 @@
 
 <CompBackgroundStarryNight klass="p-[20px] flex h-[640px] w-[360px]">
 	<!-- #: Heatmap -->
-	<div class="flex w-1/3 justify-center pr-[5px] pt-[3px]">
+	<div class="flex w-1/3 justify-center pt-[3px] pr-[5px]">
 		<div class="flex w-[76px] flex-row flex-wrap gap-[3px]">
 			<!-- NOTE: Dec 1 2023 is a Friday -->
 			<div class="size-[7px] flex-none"></div>
@@ -74,7 +74,7 @@
 		<!-- Reviews -->
 		<div class="flex flex-col">
 			<div class="text-white">Reviews</div>
-			<div class="text-[32px] font-[700] leading-[40px] text-white">
+			<div class="text-[32px] leading-[40px] font-[700] text-white">
 				{dataImage.countReviews.toLocaleString('en-US')}
 			</div>
 		</div>
@@ -82,7 +82,7 @@
 		<!-- Minutes Reviewed -->
 		<div class="flex flex-col">
 			<div class="text-white">Minutes Reviewed</div>
-			<div class="text-[32px] font-[700] leading-[40px] text-white">
+			<div class="text-[32px] leading-[40px] font-[700] text-white">
 				{dataImage.minutesSpentReviewing.toLocaleString('en-US')}
 			</div>
 		</div>
@@ -90,7 +90,7 @@
 		<!-- Cards Created -->
 		<div class="flex flex-col">
 			<div class="text-white">Cards Created</div>
-			<div class="text-[32px] font-[700] leading-[40px] text-white">
+			<div class="text-[32px] leading-[40px] font-[700] text-white">
 				{dataImage.countCardsCreated.toLocaleString('en-US')}
 			</div>
 		</div>

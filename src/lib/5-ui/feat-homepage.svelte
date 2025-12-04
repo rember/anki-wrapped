@@ -33,12 +33,12 @@
 	<!-- #: Steps -->
 
 	<div
-		class="grid grid-cols-[auto] grid-rows-[auto,auto] gap-x-8 gap-y-12 px-4 lg:grid-cols-[auto,auto] lg:pl-6 lg:pr-20"
+		class="grid grid-cols-[auto] grid-rows-[auto,auto] gap-x-8 gap-y-12 px-4 lg:grid-cols-[auto,auto] lg:pr-20 lg:pl-6"
 	>
 		<!-- Step 1 -->
 		<div class="flex gap-4 text-white">
 			<div
-				class="center mt-1 flex size-10 flex-none items-center justify-center rounded-full bg-white bg-opacity-40 text-center text-lg font-bold"
+				class="center bg-opacity-40 mt-1 flex size-10 flex-none items-center justify-center rounded-full bg-white text-center text-lg font-bold"
 			>
 				1
 			</div>
@@ -57,7 +57,7 @@
 		<!-- Step 2 -->
 		<div class="flex gap-4 text-white">
 			<div
-				class="center mt-1 flex size-10 flex-none items-center justify-center rounded-full bg-white bg-opacity-40 text-center text-lg font-bold"
+				class="center bg-opacity-40 mt-1 flex size-10 flex-none items-center justify-center rounded-full bg-white text-center text-lg font-bold"
 			>
 				2
 			</div>
@@ -77,17 +77,16 @@
 		<!-- Step 3 -->
 		<div class="flex gap-4 text-white lg:col-span-2">
 			<div
-				class="center mt-1 flex size-10 flex-none items-center justify-center rounded-full bg-white bg-opacity-40 text-center text-lg font-bold"
+				class="center bg-opacity-40 mt-1 flex size-10 flex-none items-center justify-center rounded-full bg-white text-center text-lg font-bold"
 			>
 				3
 			</div>
 			<div class="flex flex-1 flex-col gap-3">
 				<div class="w-[318px] font-semibold text-gray-300 lg:w-full">
-					Drag the exported <span class="text-white">.colpkg</span> file, or click below to select a
-					file
+					Drag the exported <span class="text-white">.colpkg</span> file, or click below to select a file
 				</div>
 				<div
-					class="h-[168px] w-[318px] overflow-hidden rounded-xl border-4 border-dashed border-white border-opacity-30 bg-white bg-opacity-60 outline-none focus-within:bg-opacity-70 hover:bg-opacity-70 lg:w-full"
+					class="border-opacity-30 bg-opacity-60 focus-within:bg-opacity-70 hover:bg-opacity-70 h-[168px] w-[318px] overflow-hidden rounded-xl border-4 border-dashed border-white bg-white outline-none lg:w-full"
 				>
 					{#if $stateCollectionAnki$._tag === 'Idle'}
 						<Dropzone
@@ -128,7 +127,7 @@
 			href="https://github.com/rember/anki-wrapped"
 			target="_blank"
 			rel="noopener noreferrer"
-			class="flex h-10 items-center gap-2 rounded-full border border-gray-200 border-opacity-30 bg-gray-200 bg-opacity-60 px-4 py-2 outline-none hover:bg-opacity-70 focus:bg-opacity-70"
+			class="border-opacity-30 bg-opacity-60 hover:bg-opacity-70 focus:bg-opacity-70 flex h-10 items-center gap-2 rounded-full border border-gray-200 bg-gray-200 px-4 py-2 outline-none"
 		>
 			<div class="icon-[lucide--github] size-5 flex-none"></div>
 			<div class="font-semibold">Source code</div>
@@ -137,7 +136,7 @@
 			href="https://rember.com"
 			target="_blank"
 			rel="noopener noreferrer"
-			class="flex h-10 items-center gap-2 rounded-full border border-gray-200 border-opacity-30 bg-gray-200 bg-opacity-60 px-4 py-2 outline-none hover:bg-opacity-70 focus:bg-opacity-70"
+			class="border-opacity-30 bg-opacity-60 hover:bg-opacity-70 focus:bg-opacity-70 flex h-10 items-center gap-2 rounded-full border border-gray-200 bg-gray-200 px-4 py-2 outline-none"
 		>
 			<div class="font-semibold">Built by the team behind</div>
 			<enhanced:img

@@ -49,7 +49,9 @@
 	</div>
 </div>
 
-<style>
+<style lang="postcss">
+	@reference "tailwindcss";
+
 	.bg-starry-night {
 		background-image: radial-gradient(
 			circle at 50% -150%,
