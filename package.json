@@ -28,7 +28,7 @@
 		"jszip": "^3.10.1",
 		"pako": "^2.1.0",
 		"posthog-js": "^1.301.1",
-		"satori": "^0.18.3",
+		"satori": "^0.12.0",
 		"svelte-file-dropzone": "^2.0.9",
 		"svelte-french-toast": "^1.2.0"
 	},
