@@ -1,11 +1,11 @@
 import { KeyValueStore } from '@effect/platform';
 import { BrowserKeyValueStore } from '@effect/platform-browser';
 import { Effect, Layer, Option, Schema } from 'effect';
-import { DataImage, DataImageFromBase64 } from '../1-shared/values';
+import { DataImage, DataImageFromBase64, type DataYear } from '../1-shared/values';
 
 // #:
 
-const KEY = 'ankiwrapped-result-2024';
+const makeKey = ({ dataYear }: { dataYear: DataYear }) => `ankiwrapped-result-${dataYear.name}`;
 
 // #:
 
@@ -15,23 +15,26 @@ export class Persistence extends Effect.Service<Persistence>()('Persistence', {
 
 		// ##: setDataImage
 
-		const setDataImage = ({ dataImage }: { dataImage: DataImage }) =>
+		const setDataImage = ({ dataYear, dataImage }: { dataYear: DataYear; dataImage: DataImage }) =>
 			Effect.gen(function* () {
+				const key = makeKey({ dataYear });
 				const valueEnc = yield* Schema.encode(DataImageFromBase64)(dataImage);
-				yield* store.set(KEY, valueEnc);
+				yield* store.set(key, valueEnc);
 			});
 
 		// ##: getDataImage
 
-		const getDataImage = Effect.gen(function* () {
-			const optionValueEnc = yield* store.get(KEY);
-			if (Option.isNone(optionValueEnc)) {
-				return Option.none<DataImage>();
-			}
-			const valueEnc = optionValueEnc.value;
-			const dataImage = yield* Schema.decode(DataImageFromBase64)(valueEnc);
-			return Option.some(dataImage);
-		});
+		const getDataImage = ({ dataYear }: { dataYear: DataYear }) =>
+			Effect.gen(function* () {
+				const key = makeKey({ dataYear });
+				const optionValueEnc = yield* store.get(key);
+				if (Option.isNone(optionValueEnc)) {
+					return Option.none<DataImage>();
+				}
+				const valueEnc = optionValueEnc.value;
+				const dataImage = yield* Schema.decode(DataImageFromBase64)(valueEnc);
+				return Option.some(dataImage);
+			});
 
 		// ##:
 
@@ -48,5 +51,5 @@ export class Persistence extends Effect.Service<Persistence>()('Persistence', {
 export const layerEmpty = Layer.succeed(Persistence, {
 	_tag: 'Persistence',
 	setDataImage: () => Effect.dieMessage('Not implemented'),
-	getDataImage: Effect.dieMessage('Not implemented')
+	getDataImage: () => Effect.dieMessage('Not implemented')
 });

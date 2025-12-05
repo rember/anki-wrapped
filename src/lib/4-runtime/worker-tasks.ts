@@ -1,7 +1,7 @@
 import { Worker } from '@effect/platform';
 import { BrowserWorker } from '@effect/platform-browser';
 import { Effect, Layer } from 'effect';
-import { DataImage } from '../1-shared/values';
+import { DataImage, DataYear } from '../1-shared/values';
 import {
 	TaskGenerateSvg,
 	TaskProcessCollectionAnki,
@@ -17,10 +17,10 @@ export class WorkerTasks extends Effect.Service<WorkerTasks>()('WorkerTasks', {
 
 		// ##:
 
-		const processCollectionAnki = (payload: { file: File }) =>
+		const processCollectionAnki = (payload: { file: File; dataYear: DataYear }) =>
 			pool.executeEffect(new TaskProcessCollectionAnki(payload));
 
-		const generateSvg = (payload: { dataImage: DataImage }) =>
+		const generateSvg = (payload: { dataYear: DataYear; dataImage: DataImage }) =>
 			pool.executeEffect(new TaskGenerateSvg(payload));
 
 		const renderPng = (payload: { dataImage: DataImage; svg: string }) =>

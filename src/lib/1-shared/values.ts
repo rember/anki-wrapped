@@ -1,4 +1,27 @@
-import { Schema } from 'effect';
+import { DateTime, Schema } from 'effect';
+
+// #:
+
+export const DataYear = Schema.Struct({
+	name: Schema.String,
+	tsStart: Schema.DateTimeUtc,
+	tsEnd: Schema.DateTimeUtc
+});
+
+export interface DataYear extends Schema.Schema.Type<typeof DataYear> {}
+export interface DataYearJSON extends Schema.Schema.Encoded<typeof DataYear> {}
+
+export const dataYear2024 = DataYear.make({
+	name: '2024',
+	tsStart: DateTime.unsafeMake(1701388800000), // 01 Dec 2023, 1am CET
+	tsEnd: DateTime.unsafeMake(1733011200000) // 01 Dec 2024, 1am CEST
+});
+
+export const dataYear2025 = DataYear.make({
+	name: '2025',
+	tsStart: DateTime.unsafeMake(1733011200000), // 01 Dec 2024, 1am CEST
+	tsEnd: DateTime.unsafeMake(1764547200000) // 01 Dec 2025, 1am CEST
+});
 
 // #:
 

@@ -4,13 +4,13 @@ import { Effect, identity, Option, pipe } from 'effect';
 import toast from 'svelte-french-toast';
 import { get, writable, type Readable } from 'svelte/store';
 import { isUserAgentMobile } from '../1-shared/utils';
-import { dataYear2024, type DataImage } from '../1-shared/values';
+import { dataYear2025, type DataImage } from '../1-shared/values';
 import * as Persistence from '../2-services/persistence';
 import * as WorkerTasks from '../4-runtime/worker-tasks';
 
 // #:
 
-const NAME_FILE_IMAGE = 'Anki Wrapped 2024.png';
+const NAME_FILE_IMAGE = 'Anki Wrapped 2025.png';
 
 // #: Types
 
@@ -60,7 +60,7 @@ export const make = Effect.gen(function* () {
 
 	// ##: State
 
-	const dataYear = dataYear2024;
+	const dataYear = dataYear2025;
 
 	const optionDataImage = yield* storage.getDataImage({ dataYear });
 
@@ -82,8 +82,8 @@ export const make = Effect.gen(function* () {
 				yield* Effect.tryPromise(() =>
 					navigator.share({
 						files: [file],
-						title: 'Anki Wrapped 2024',
-						text: "Here's my Anki Wrapped for 2024"
+						title: 'Anki Wrapped 2025',
+						text: "Here's my Anki Wrapped for 2025"
 					})
 				);
 
