@@ -1,11 +1,10 @@
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
-import { Data, Effect, identity, Option, pipe, Schema } from 'effect';
+import { Effect, identity, Option, pipe } from 'effect';
 import toast from 'svelte-french-toast';
 import { get, writable, type Readable } from 'svelte/store';
 import { isUserAgentMobile } from '../1-shared/utils';
 import type { DataImage } from '../1-shared/values';
-import { Email } from '../1-shared/values';
 import * as Persistence from '../2-services/persistence';
 import * as WorkerTasks from '../4-runtime/worker-tasks';
 
@@ -38,11 +37,6 @@ export type StateImage =
 			readonly blobPng: Blob;
 	  };
 
-export type StateMarketingEmail =
-	| { readonly _tag: 'Ready'; readonly email: string }
-	| { readonly _tag: 'Loading'; readonly email: Email }
-	| { readonly _tag: 'Success' };
-
 export interface Args {
 	readonly dataImage: DataImage;
 	readonly svg: string;
@@ -52,14 +46,10 @@ export interface Bindings {
 	// ##: State
 
 	readonly stateImage$: Readable<StateImage>;
-	readonly stateMarketingEmail$: Readable<StateMarketingEmail>;
 
 	// ##: Commands
 
 	readonly downloadPng: Effect.Effect<void>;
-	readonly createMarketingEmail: Effect.Effect<void>;
-
-	readonly onInputEmail: ({ value }: { value: string }) => Effect.Effect<void>;
 }
 
 // #: make
@@ -73,7 +63,6 @@ export const make = Effect.gen(function* () {
 	const optionDataImage = yield* storage.getDataImage;
 
 	const stateImage$ = writable<StateImage>({ _tag: 'GeneratingSvg', optionDataImage });
-	const stateMarketingEmail$ = writable<StateMarketingEmail>({ _tag: 'Ready', email: '' });
 
 	// ##: Commands
 
@@ -129,55 +118,6 @@ export const make = Effect.gen(function* () {
 		Effect.catchAll(() => Effect.sync(() => toast.error('Something went wrong')))
 	);
 
-	const createMarketingEmail = Effect.gen(function* () {
-		const stateMarketingEmail = get(stateMarketingEmail$);
-		if (stateMarketingEmail._tag !== 'Ready') {
-			yield* Effect.logWarning('Cannot create marketing email, state is not Ready');
-			return;
-		}
-
-		const email = yield* Schema.decode(Email)(stateMarketingEmail.email);
-
-		yield* Effect.sync(() => stateMarketingEmail$.set({ _tag: 'Loading', email }));
-
-		const response = yield* Effect.tryPromise({
-			try: () =>
-				fetch('https://www.rember.com/api/marketing/create-marketing-email', {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ email, metadata: { source: 'ankiwrapped.com' } })
-				}),
-			catch: (error) => new ErrorCannotCreateMarketingEmail({ error })
-		});
-
-		if (response.ok) {
-			yield* Effect.sync(() => stateMarketingEmail$.set({ _tag: 'Success' }));
-		} else {
-			yield* Effect.fail(new ErrorCannotCreateMarketingEmail({}));
-		}
-	}).pipe(
-		Effect.tapErrorCause(Effect.logError),
-		Effect.catchAll(() =>
-			pipe(
-				Effect.sync(() => toast.error('Something went wrong')),
-				Effect.andThen(() =>
-					Effect.sync(() => stateMarketingEmail$.set({ _tag: 'Ready', email: '' }))
-				)
-			)
-		)
-	);
-
-	const onInputEmail = ({ value }: { value: string }) =>
-		Effect.gen(function* () {
-			const stateMarketingEmail = get(stateMarketingEmail$);
-			if (stateMarketingEmail._tag !== 'Ready') {
-				yield* Effect.logWarning('Cannot create marketing email, state is not Ready');
-				return;
-			}
-
-			yield* Effect.sync(() => stateMarketingEmail$.set({ _tag: 'Ready', email: value }));
-		}).pipe(Effect.tapErrorCause(Effect.logError));
-
 	// ##: Side effects
 	// NOTE: We render the image as soon as the page load, we don't wait for
 	// the user to press the "Download" button.
@@ -212,20 +152,7 @@ export const make = Effect.gen(function* () {
 	return identity<Bindings>({
 		// State
 		stateImage$: stateImage$,
-		stateMarketingEmail$,
 		// Commands
-		downloadPng,
-		createMarketingEmail,
-		onInputEmail
+		downloadPng
 	});
 });
-
-// #:
-
-export class ErrorCannotCreateMarketingEmail extends Data.TaggedError(
-	'FeatResult2024/CannotCreateMarketingEmail'
-)<{ error?: unknown | undefined }> {
-	override get message() {
-		return 'Failed to create marketing email, response is not successful';
-	}
-}

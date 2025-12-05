@@ -1,3 +1,9 @@
+<!--
+	NOTE: This file and feat-result-2024.ts will be duplicated for each year (e.g., feat-result-2025.svelte, feat-result-2025.ts).
+	We intentionally do NOT abstract or share UI code between years because we expect the UI design to change significantly
+	from year to year. This duplication allows each year's UI to evolve independently without affecting other years.
+-->
+
 <script lang="ts">
 	import { Exit, Scope } from 'effect';
 	import { onDestroy } from 'svelte';
@@ -9,8 +15,10 @@
 	const scope = Scope.make().pipe(runtime.runSync);
 	onDestroy(() => void Scope.close(scope, Exit.succeed(undefined)).pipe(runtime.runFork));
 
-	const { stateImage$, stateMarketingEmail$, downloadPng, createMarketingEmail, onInputEmail } =
-		FeatResult2024.make.pipe(Scope.extend(scope), runtime.runSync);
+	const { stateImage$, downloadPng } = FeatResult2024.make.pipe(
+		Scope.extend(scope),
+		runtime.runSync
+	);
 </script>
 
 <div
@@ -75,55 +83,14 @@
 		<!-- #: Footer -->
 
 		<div class="flex flex-col gap-2">
-			<div class="font-semibold text-[#000c3a]">
-				We are building a new spaced repetition system, interested?
-			</div>
-
-			<div class="flex gap-3">
-				{#if $stateMarketingEmail$._tag === 'Ready' || $stateMarketingEmail$._tag === 'Loading'}
-					<input
-						type="text"
-						name="email"
-						inputmode="email"
-						autocomplete="email"
-						autocorrect="off"
-						autocapitalize="off"
-						placeholder="Enter your email address..."
-						class="flex-1 rounded bg-gray-50 p-2 text-gray-700"
-						disabled={$stateMarketingEmail$._tag === 'Loading'}
-						value={$stateMarketingEmail$.email}
-						oninput={(e) =>
-							void onInputEmail({ value: e.currentTarget.value }).pipe(runtime.runFork)}
-						onkeydown={(e) => {
-							if (
-								$stateMarketingEmail$._tag === 'Ready' &&
-								e.key === 'Enter' &&
-								!e.shiftKey &&
-								!e.altKey &&
-								!e.ctrlKey &&
-								!e.metaKey
-							) {
-								createMarketingEmail.pipe(runtime.runFork);
-							}
-						}}
-					/>
-
-					<button
-						class="rounded bg-[#26b09a] p-2 font-semibold text-white outline-none enabled:hover:bg-[#198586] enabled:focus:bg-[#198586] disabled:opacity-40"
-						class:text-transparent={$stateMarketingEmail$._tag === 'Loading'}
-						class:animate-pulse={$stateMarketingEmail$._tag === 'Loading'}
-						onclick={() => void createMarketingEmail.pipe(runtime.runFork)}
-						disabled={$stateMarketingEmail$._tag === 'Loading'}
-					>
-						Let's go!
-					</button>
-				{/if}
-				{#if $stateMarketingEmail$._tag === 'Success'}
-					<div class="flex-1 rounded bg-[#26b09a] p-2 font-semibold text-white opacity-40">
-						Thank you for subscribing!
-					</div>
-				{/if}
-			</div>
+			<a
+				href="https://github.com/giacomoran/anki-wrapped"
+				target="_blank"
+				rel="noopener noreferrer"
+				class="-mb-[4px] flex gap-2 font-semibold text-[#26b09a] outline-none hover:text-[#198586] focus:text-[#198586]"
+			>
+				Having fun? Star on GitHub
+			</a>
 		</div>
 	</div>
 </div>
