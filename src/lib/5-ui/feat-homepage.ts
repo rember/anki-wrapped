@@ -4,6 +4,7 @@ import { toast } from 'svelte-french-toast';
 import { writable, type Readable } from 'svelte/store';
 import * as Persistence from '../2-services/persistence';
 import * as WorkerTasks from '../4-runtime/worker-tasks';
+import { dataYear2025 } from '$lib/1-shared/values';
 
 // #: Types
 
@@ -37,10 +38,11 @@ export const make = Effect.gen(function* () {
 		Effect.gen(function* () {
 			stateCollectionAnki$.set({ _tag: 'Loading', file });
 
-			const { dataImage } = yield* workerTasks.processCollectionAnki({ file });
-			yield* persistence.setDataImage({ dataImage });
+			const dataYear = dataYear2025;
+			const { dataImage } = yield* workerTasks.processCollectionAnki({ file, dataYear });
+			yield* persistence.setDataImage({ dataYear, dataImage });
 
-			yield* Effect.promise(() => goto('/result-2024'));
+			yield* Effect.promise(() => goto('/result-2025'));
 		}).pipe(
 			Effect.tapErrorCause(Effect.logError),
 			Effect.catchAll(() =>

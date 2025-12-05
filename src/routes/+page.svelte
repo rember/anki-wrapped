@@ -3,17 +3,17 @@
 </script>
 
 <svelte:head>
-	<title>2024 Anki Wrapped</title>
+	<title>2025 Anki Wrapped</title>
 
 	<!-- SEO Meta Tags -->
-	<meta name="title" content="2024 Anki Wrapped: Your Year in Spaced Repetition Flashcards" />
+	<meta name="title" content="2025 Anki Wrapped: Your Year in Spaced Repetition Flashcards" />
 	<meta
 		name="description"
 		content="Anki Wrapped is like Spotify Wrapped, but for your Anki flashcard collection. Discover fun stats about your learning habits with spaced repetition."
 	/>
 	<meta
 		name="keywords"
-		content="Anki Wrapped, 2024, Anki spaced repetition flashcards, spaced repetition flashcard stats, Anki year in review, Anki collection analytics, Rember"
+		content="Anki Wrapped, 2025, Anki spaced repetition flashcards, spaced repetition flashcard stats, Anki year in review, Anki collection analytics, Rember"
 	/>
 	<meta name="robots" content="index, follow" />
 	<meta name="author" content="Rember Team" />
@@ -21,7 +21,7 @@
 	<!-- Open Graph Meta Tags -->
 	<meta
 		property="og:title"
-		content="2024 Anki Wrapped: Your Year in Spaced Repetition Flashcards"
+		content="2025 Anki Wrapped: Your Year in Spaced Repetition Flashcards"
 	/>
 	<meta
 		property="og:description"
@@ -36,7 +36,7 @@
 	<!-- Twitter Meta Tags -->
 	<meta
 		name="twitter:title"
-		content="2024 Anki Wrapped: Your Year in Spaced Repetition Flashcards"
+		content="2025 Anki Wrapped: Your Year in Spaced Repetition Flashcards"
 	/>
 	<meta
 		name="twitter:description"

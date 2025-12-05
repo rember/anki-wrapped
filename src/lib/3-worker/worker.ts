@@ -17,7 +17,7 @@ const layerWorkerRunner = WorkerRunner.layerSerialized(
 		TaskGenerateSvg: (req) =>
 			Effect.gen(function* () {
 				const image = yield* Image.Image;
-				const svg = yield* image.generateSvg({ dataImage: req.dataImage });
+				const svg = yield* image.generateSvg({ dataYear: req.dataYear, dataImage: req.dataImage });
 				return { svg };
 			}).pipe(Effect.tapErrorCause(Effect.logError)),
 		TaskRenderPng: (req) =>
@@ -29,7 +29,10 @@ const layerWorkerRunner = WorkerRunner.layerSerialized(
 		TaskProcessCollectionAnki: (req) =>
 			Effect.gen(function* () {
 				const collectionAnki = yield* CollectionAnki.CollectionAnki;
-				const dataImage = yield* collectionAnki.processFile({ file: req.file });
+				const dataImage = yield* collectionAnki.processFile({
+					file: req.file,
+					dataYear: req.dataYear
+				});
 				return { dataImage };
 			}).pipe(
 				Effect.tapErrorCause(Effect.logError),

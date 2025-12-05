@@ -1,5 +1,5 @@
 import { Schema } from 'effect';
-import { DataImage } from './values';
+import { DataImage, DataYear } from './values';
 
 // #:
 
@@ -9,7 +9,8 @@ export class TaskProcessCollectionAnki extends Schema.TaggedRequest<TaskProcessC
 		failure: Schema.Struct({ message: Schema.String }),
 		success: Schema.Struct({ dataImage: DataImage }),
 		payload: {
-			file: Schema.instanceOf(File)
+			file: Schema.instanceOf(File),
+			dataYear: DataYear
 		}
 	}
 ) {}
@@ -20,6 +21,7 @@ export class TaskGenerateSvg extends Schema.TaggedRequest<TaskGenerateSvg>()('Ta
 	failure: Schema.Never,
 	success: Schema.Struct({ svg: Schema.String }),
 	payload: {
+		dataYear: DataYear,
 		dataImage: DataImage
 	}
 }) {}

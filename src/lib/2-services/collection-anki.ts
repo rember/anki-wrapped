@@ -1,9 +1,9 @@
 import { SqliteClient } from '@effect/sql-sqlite-wasm';
-import { Array, Data, Effect, Option, pipe, Record, Schema, String } from 'effect';
+import { Array, Data, DateTime, Effect, Option, pipe, Record, Schema, String } from 'effect';
 import * as fzstd from 'fzstd';
 import JSZip from 'jszip';
-import { TS_END_2024, TS_START_2024 } from '../1-shared/constants';
 import { DataImage } from '../1-shared/values';
+import type { DataYear } from '../1-shared/values';
 
 // #:
 
@@ -13,8 +13,11 @@ export class CollectionAnki extends Effect.Service<CollectionAnki>()('Collection
 
 		// ##: processFile
 
-		const processFile = ({ file }: { file: File }) =>
+		const processFile = ({ file, dataYear }: { file: File; dataYear: DataYear }) =>
 			Effect.gen(function* () {
+				const millisStart = DateTime.toEpochMillis(dataYear.tsStart);
+				const millisEnd = DateTime.toEpochMillis(dataYear.tsEnd);
+
 				// Unzip the .colpkg file
 				const filesColpkg = yield* Effect.tryPromise({
 					try: () => JSZip.loadAsync(file),
@@ -55,7 +58,7 @@ export class CollectionAnki extends Effect.Service<CollectionAnki>()('Collection
 						FROM
 							cards
 						WHERE
-							id BETWEEN ${TS_START_2024} AND ${TS_END_2024}
+							id BETWEEN ${millisStart} AND ${millisEnd}
 					`,
 					Effect.flatMap(
 						Schema.decodeUnknown(Schema.Tuple(Schema.Struct({ cards_created: Schema.Number })))
@@ -75,7 +78,7 @@ export class CollectionAnki extends Effect.Service<CollectionAnki>()('Collection
 						FROM
 							revlog
 						WHERE
-							id BETWEEN ${TS_START_2024} AND ${TS_END_2024}
+							id BETWEEN ${millisStart} AND ${millisEnd}
 							AND type != 4
 					`,
 					Effect.flatMap(
@@ -92,7 +95,7 @@ export class CollectionAnki extends Effect.Service<CollectionAnki>()('Collection
 						FROM
 							revlog
 						WHERE
-							revlog.id BETWEEN ${TS_START_2024} AND ${TS_END_2024}
+							revlog.id BETWEEN ${millisStart} AND ${millisEnd}
 							AND revlog.type != 4
 					`,
 					Effect.flatMap(
@@ -114,7 +117,7 @@ export class CollectionAnki extends Effect.Service<CollectionAnki>()('Collection
 							JOIN cards c ON r.cid = c.id
 							JOIN decks d ON c.did = d.id
 						WHERE
-							r.id BETWEEN ${TS_START_2024} AND ${TS_END_2024}
+							r.id BETWEEN ${millisStart} AND ${millisEnd}
 							AND r.type != 4
 						GROUP BY
 							d.id
@@ -142,7 +145,7 @@ export class CollectionAnki extends Effect.Service<CollectionAnki>()('Collection
 						FROM
 							revlog r
 						WHERE
-							r.id BETWEEN ${TS_START_2024} AND ${TS_END_2024}
+							r.id BETWEEN ${millisStart} AND ${millisEnd}
 							AND r.type != 4
 						GROUP BY
 							date_iso

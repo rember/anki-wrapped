@@ -3,19 +3,19 @@
   Satori code in the Image service.
 -->
 <script lang="ts">
-	import { Array, Option, pipe, Record } from 'effect';
-	import { TS_END_2024, TS_START_2024 } from '../1-shared/constants';
-	import type { DataImage } from '../1-shared/values';
+	import { Array, DateTime, Option, pipe, Record } from 'effect';
+	import type { DataImage, DataYear } from '../1-shared/values';
 	import CompBackgroundStarryNight from './comp-background-starry-night.svelte';
 
 	// ##: Props
 
+	export let dataYear: DataYear;
 	export let dataImage: DataImage;
 
 	// ##:
 
-	const dateStart = new Date(TS_START_2024);
-	const dateEnd = new Date(TS_END_2024);
+	const dateStart = DateTime.toDate(dataYear.tsStart);
+	const dateEnd = DateTime.toDate(dataYear.tsEnd);
 
 	const arrayDateIso: string[] = [];
 	const dateCurrent = new Date(dateStart);
@@ -74,7 +74,7 @@
 		<!-- Reviews -->
 		<div class="flex flex-col">
 			<div class="text-white">Reviews</div>
-			<div class="text-[32px] leading-[40px] font-[700] text-white">
+			<div class="text-[32px] leading-[40px] font-bold text-white">
 				{dataImage.countReviews.toLocaleString('en-US')}
 			</div>
 		</div>
@@ -82,7 +82,7 @@
 		<!-- Minutes Reviewed -->
 		<div class="flex flex-col">
 			<div class="text-white">Minutes Reviewed</div>
-			<div class="text-[32px] leading-[40px] font-[700] text-white">
+			<div class="text-[32px] leading-[40px] font-bold text-white">
 				{dataImage.minutesSpentReviewing.toLocaleString('en-US')}
 			</div>
 		</div>
@@ -90,7 +90,7 @@
 		<!-- Cards Created -->
 		<div class="flex flex-col">
 			<div class="text-white">Cards Created</div>
-			<div class="text-[32px] leading-[40px] font-[700] text-white">
+			<div class="text-[32px] leading-[40px] font-bold text-white">
 				{dataImage.countCardsCreated.toLocaleString('en-US')}
 			</div>
 		</div>
@@ -100,10 +100,10 @@
 			<div class="pb-[4px] text-white">Top Decks</div>
 			{#each dataImage.top5DecksByCountReviews as { name }, ix}
 				<div class="flex gap-[12px]">
-					<div class="font-[700] text-white">
+					<div class="font-bold text-white">
 						{(ix + 1).toLocaleString('en-US')}
 					</div>
-					<div class="truncate font-[700] text-white">
+					<div class="truncate font-bold text-white">
 						{stripEmojis(name).trim()}
 					</div>
 				</div>
@@ -111,6 +111,6 @@
 		</div>
 
 		<!-- URL -->
-		<div class="font-[500] text-white">ANKIWRAPPED.COM</div>
+		<div class="font-medium text-white">ANKIWRAPPED.COM</div>
 	</div>
 </CompBackgroundStarryNight>

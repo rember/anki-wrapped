@@ -8,14 +8,14 @@
 	import { Exit, Scope } from 'effect';
 	import { onDestroy } from 'svelte';
 	import { runtime } from '../4-runtime/runtime';
-	import * as FeatResult2024 from './feat-result-2024';
+	import * as FeatResult2025 from './feat-result-2025';
 
 	// ##: Bindings
 
 	const scope = Scope.make().pipe(runtime.runSync);
 	onDestroy(() => void Scope.close(scope, Exit.succeed(undefined)).pipe(runtime.runFork));
 
-	const { stateImage$, downloadPng } = FeatResult2024.make.pipe(
+	const { stateImage$, downloadPng } = FeatResult2025.make.pipe(
 		Scope.extend(scope),
 		runtime.runSync
 	);
@@ -43,7 +43,7 @@
 	<div class="flex h-[648px] w-[360px] flex-col gap-8">
 		<!-- #: Header -->
 
-		<div class="text-3xl font-bold text-[#000c3a]">Here is your 2024 Anki Wrapped</div>
+		<div class="text-3xl font-bold text-[#000c3a]">Here is your 2025 Anki Wrapped</div>
 
 		<button
 			class="h-16 rounded-lg bg-[#000c3a] font-semibold text-white outline-none enabled:hover:bg-[#003d64] enabled:focus:bg-[#003d64] disabled:animate-pulse disabled:opacity-40"

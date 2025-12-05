@@ -1,10 +1,9 @@
 import { initWasm as initWasmResvg, Resvg } from '@resvg/resvg-wasm';
 import URL_WASM_RESVG from '@resvg/resvg-wasm/index_bg.wasm?url';
-import { Array, Effect, Option, pipe, Random, Record } from 'effect';
+import { Array, DateTime, Effect, Option, pipe, Random, Record } from 'effect';
 import type { SatoriOptions } from 'satori';
 import satori from 'satori';
-import { TS_END_2024, TS_START_2024 } from '../1-shared/constants';
-import type { DataImage } from '../1-shared/values';
+import type { DataImage, DataYear } from '../1-shared/values';
 
 // #:
 
@@ -46,7 +45,7 @@ export class Image extends Effect.Service<Image>()('Image', {
 			]
 		};
 
-		const generateSvg = (args: { dataImage: DataImage }) =>
+		const generateSvg = (args: { dataYear: DataYear; dataImage: DataImage }) =>
 			Effect.gen(function* () {
 				const templateImage = yield* makeTemplateImage(args);
 				return yield* Effect.promise(() => satori(templateImage, optionsSatori));
@@ -80,7 +79,7 @@ export class Image extends Effect.Service<Image>()('Image', {
 
 // #:
 
-const makeTemplateImage = ({ dataImage }: { dataImage: DataImage }) =>
+const makeTemplateImage = ({ dataYear, dataImage }: { dataYear: DataYear; dataImage: DataImage }) =>
 	Effect.gen(function* () {
 		// ##: Background starry night
 
@@ -148,8 +147,8 @@ const makeTemplateImage = ({ dataImage }: { dataImage: DataImage }) =>
 
 		// ##: Heatmap
 
-		const dateStart = new Date(TS_START_2024);
-		const dateEnd = new Date(TS_END_2024);
+		const dateStart = DateTime.toDate(dataYear.tsStart);
+		const dateEnd = DateTime.toDate(dataYear.tsEnd);
 
 		const arrayDateIso: string[] = [];
 		const dateCurrent = new Date(dateStart);
